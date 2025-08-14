@@ -1,0 +1,6 @@
+Invoking command in '/home/max/bebop_ws/build/bebop_client': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/bebop_client -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/bebop_client
+Invoked command in '/home/max/bebop_ws/build/bebop_client' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/bebop_client -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/bebop_client
+Invoking command in '/home/max/bebop_ws/build/bebop_client': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/bebop_client -- -j16 -l16
+Invoked command in '/home/max/bebop_ws/build/bebop_client' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/bebop_client -- -j16 -l16
+Invoking command in '/home/max/bebop_ws/build/bebop_client': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/bebop_client
+Invoked command in '/home/max/bebop_ws/build/bebop_client' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/bebop_client

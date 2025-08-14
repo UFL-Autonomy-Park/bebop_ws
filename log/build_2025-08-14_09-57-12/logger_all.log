@@ -1,0 +1,419 @@
+[0.089s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build']
+[0.089s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=16, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0x72e56899c670>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x72e56895fc10>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x72e56895fc10>>, mixin_verb=('build',))
+[0.296s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.296s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.296s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.296s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.296s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.296s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.296s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/max/bebop_ws'
+[0.296s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.296s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.296s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.296s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.296s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.296s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.296s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.296s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.296s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.306s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_client) by extensions ['ignore', 'ignore_ament_install']
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_client) by extension 'ignore'
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_client) by extension 'ignore_ament_install'
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_client) by extensions ['colcon_pkg']
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_client) by extension 'colcon_pkg'
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_client) by extensions ['colcon_meta']
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_client) by extension 'colcon_meta'
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_client) by extensions ['ros']
+[0.307s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_client) by extension 'ros'
+[0.309s] DEBUG:colcon.colcon_core.package_identification:Package 'src/bebop_client' with type 'ros.ament_cmake' and name 'bebop_client'
+[0.309s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_server) by extensions ['ignore', 'ignore_ament_install']
+[0.309s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_server) by extension 'ignore'
+[0.309s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_server) by extension 'ignore_ament_install'
+[0.309s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_server) by extensions ['colcon_pkg']
+[0.309s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_server) by extension 'colcon_pkg'
+[0.309s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_server) by extensions ['colcon_meta']
+[0.309s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_server) by extension 'colcon_meta'
+[0.309s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_server) by extensions ['ros']
+[0.309s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_server) by extension 'ros'
+[0.310s] DEBUG:colcon.colcon_core.package_identification:Package 'src/bebop_server' with type 'ros.ament_cmake' and name 'bebop_server'
+[0.310s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_teleop) by extensions ['ignore', 'ignore_ament_install']
+[0.310s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_teleop) by extension 'ignore'
+[0.310s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_teleop) by extension 'ignore_ament_install'
+[0.310s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_teleop) by extensions ['colcon_pkg']
+[0.310s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_teleop) by extension 'colcon_pkg'
+[0.310s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_teleop) by extensions ['colcon_meta']
+[0.310s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_teleop) by extension 'colcon_meta'
+[0.310s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_teleop) by extensions ['ros']
+[0.310s] Level 1:colcon.colcon_core.package_identification:_identify(src/bebop_teleop) by extension 'ros'
+[0.311s] DEBUG:colcon.colcon_core.package_identification:Package 'src/bebop_teleop' with type 'ros.ament_cmake' and name 'bebop_teleop'
+[0.311s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_bebop_driver) by extensions ['ignore', 'ignore_ament_install']
+[0.311s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_bebop_driver) by extension 'ignore'
+[0.311s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_bebop_driver) by extension 'ignore_ament_install'
+[0.311s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_bebop_driver) by extensions ['colcon_pkg']
+[0.311s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_bebop_driver) by extension 'colcon_pkg'
+[0.311s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_bebop_driver) by extensions ['colcon_meta']
+[0.311s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_bebop_driver) by extension 'colcon_meta'
+[0.311s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_bebop_driver) by extensions ['ros']
+[0.311s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_bebop_driver) by extension 'ros'
+[0.312s] DEBUG:colcon.colcon_core.package_identification:Package 'src/ros2_bebop_driver' with type 'ros.ament_cmake' and name 'ros2_bebop_driver'
+[0.312s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_parrot_arsdk) by extensions ['ignore', 'ignore_ament_install']
+[0.312s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_parrot_arsdk) by extension 'ignore'
+[0.312s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_parrot_arsdk) by extension 'ignore_ament_install'
+[0.312s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_parrot_arsdk) by extensions ['colcon_pkg']
+[0.312s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_parrot_arsdk) by extension 'colcon_pkg'
+[0.312s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_parrot_arsdk) by extensions ['colcon_meta']
+[0.312s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_parrot_arsdk) by extension 'colcon_meta'
+[0.312s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_parrot_arsdk) by extensions ['ros']
+[0.312s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2_parrot_arsdk) by extension 'ros'
+[0.312s] DEBUG:colcon.colcon_core.package_identification:Package 'src/ros2_parrot_arsdk' with type 'ros.ament_cmake' and name 'ros2_parrot_arsdk'
+[0.312s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.312s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.312s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.312s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.312s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.327s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.327s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.327s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/max/bebop_ws/install/ros2_parrot_arsdk' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[0.327s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/max/bebop_ws/install/ros2_bebop_driver' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[0.327s] WARNING:colcon.colcon_ros.prefix_path.catkin:The path '/home/max/bebop_ws/install/ros2_parrot_arsdk' in the environment variable CMAKE_PREFIX_PATH doesn't exist
+[0.327s] WARNING:colcon.colcon_ros.prefix_path.catkin:The path '/home/max/bebop_ws/install/ros2_bebop_driver' in the environment variable CMAKE_PREFIX_PATH doesn't exist
+[0.328s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 0 installed packages in /home/max/bebop_ws/install
+[0.329s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 297 installed packages in /opt/ros/humble
+[0.330s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.361s] Level 5:colcon.colcon_core.verb:set package 'bebop_client' build argument 'cmake_args' from command line to 'None'
+[0.361s] Level 5:colcon.colcon_core.verb:set package 'bebop_client' build argument 'cmake_target' from command line to 'None'
+[0.361s] Level 5:colcon.colcon_core.verb:set package 'bebop_client' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.361s] Level 5:colcon.colcon_core.verb:set package 'bebop_client' build argument 'cmake_clean_cache' from command line to 'False'
+[0.361s] Level 5:colcon.colcon_core.verb:set package 'bebop_client' build argument 'cmake_clean_first' from command line to 'False'
+[0.361s] Level 5:colcon.colcon_core.verb:set package 'bebop_client' build argument 'cmake_force_configure' from command line to 'False'
+[0.361s] Level 5:colcon.colcon_core.verb:set package 'bebop_client' build argument 'ament_cmake_args' from command line to 'None'
+[0.361s] Level 5:colcon.colcon_core.verb:set package 'bebop_client' build argument 'catkin_cmake_args' from command line to 'None'
+[0.361s] Level 5:colcon.colcon_core.verb:set package 'bebop_client' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.361s] DEBUG:colcon.colcon_core.verb:Building package 'bebop_client' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/max/bebop_ws/build/bebop_client', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/max/bebop_ws/install/bebop_client', 'merge_install': False, 'path': '/home/max/bebop_ws/src/bebop_client', 'symlink_install': False, 'test_result_base': None}
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_server' build argument 'cmake_args' from command line to 'None'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_server' build argument 'cmake_target' from command line to 'None'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_server' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_server' build argument 'cmake_clean_cache' from command line to 'False'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_server' build argument 'cmake_clean_first' from command line to 'False'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_server' build argument 'cmake_force_configure' from command line to 'False'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_server' build argument 'ament_cmake_args' from command line to 'None'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_server' build argument 'catkin_cmake_args' from command line to 'None'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_server' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.362s] DEBUG:colcon.colcon_core.verb:Building package 'bebop_server' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/max/bebop_ws/build/bebop_server', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/max/bebop_ws/install/bebop_server', 'merge_install': False, 'path': '/home/max/bebop_ws/src/bebop_server', 'symlink_install': False, 'test_result_base': None}
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_teleop' build argument 'cmake_args' from command line to 'None'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_teleop' build argument 'cmake_target' from command line to 'None'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_teleop' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_teleop' build argument 'cmake_clean_cache' from command line to 'False'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_teleop' build argument 'cmake_clean_first' from command line to 'False'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_teleop' build argument 'cmake_force_configure' from command line to 'False'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_teleop' build argument 'ament_cmake_args' from command line to 'None'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_teleop' build argument 'catkin_cmake_args' from command line to 'None'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'bebop_teleop' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.362s] DEBUG:colcon.colcon_core.verb:Building package 'bebop_teleop' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/max/bebop_ws/build/bebop_teleop', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/max/bebop_ws/install/bebop_teleop', 'merge_install': False, 'path': '/home/max/bebop_ws/src/bebop_teleop', 'symlink_install': False, 'test_result_base': None}
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'ros2_parrot_arsdk' build argument 'cmake_args' from command line to 'None'
+[0.362s] Level 5:colcon.colcon_core.verb:set package 'ros2_parrot_arsdk' build argument 'cmake_target' from command line to 'None'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_parrot_arsdk' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_parrot_arsdk' build argument 'cmake_clean_cache' from command line to 'False'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_parrot_arsdk' build argument 'cmake_clean_first' from command line to 'False'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_parrot_arsdk' build argument 'cmake_force_configure' from command line to 'False'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_parrot_arsdk' build argument 'ament_cmake_args' from command line to 'None'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_parrot_arsdk' build argument 'catkin_cmake_args' from command line to 'None'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_parrot_arsdk' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.363s] DEBUG:colcon.colcon_core.verb:Building package 'ros2_parrot_arsdk' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/max/bebop_ws/build/ros2_parrot_arsdk', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/max/bebop_ws/install/ros2_parrot_arsdk', 'merge_install': False, 'path': '/home/max/bebop_ws/src/ros2_parrot_arsdk', 'symlink_install': False, 'test_result_base': None}
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_bebop_driver' build argument 'cmake_args' from command line to 'None'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_bebop_driver' build argument 'cmake_target' from command line to 'None'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_bebop_driver' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_bebop_driver' build argument 'cmake_clean_cache' from command line to 'False'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_bebop_driver' build argument 'cmake_clean_first' from command line to 'False'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_bebop_driver' build argument 'cmake_force_configure' from command line to 'False'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_bebop_driver' build argument 'ament_cmake_args' from command line to 'None'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_bebop_driver' build argument 'catkin_cmake_args' from command line to 'None'
+[0.363s] Level 5:colcon.colcon_core.verb:set package 'ros2_bebop_driver' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.363s] DEBUG:colcon.colcon_core.verb:Building package 'ros2_bebop_driver' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/max/bebop_ws/build/ros2_bebop_driver', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/max/bebop_ws/install/ros2_bebop_driver', 'merge_install': False, 'path': '/home/max/bebop_ws/src/ros2_bebop_driver', 'symlink_install': False, 'test_result_base': None}
+[0.363s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.364s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.365s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/max/bebop_ws/src/ros2_parrot_arsdk' with build type 'ament_cmake'
+[0.365s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/max/bebop_ws/src/ros2_parrot_arsdk'
+[0.367s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.367s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.367s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.370s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/max/bebop_ws/src/bebop_client' with build type 'ament_cmake'
+[0.370s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/max/bebop_ws/src/bebop_client'
+[0.370s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.370s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.372s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/max/bebop_ws/src/bebop_server' with build type 'ament_cmake'
+[0.373s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/max/bebop_ws/src/bebop_server'
+[0.373s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.373s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.375s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/max/bebop_ws/src/bebop_teleop' with build type 'ament_cmake'
+[0.375s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/max/bebop_ws/src/bebop_teleop'
+[0.375s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.375s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.382s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/ros2_parrot_arsdk': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/ros2_parrot_arsdk -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/ros2_parrot_arsdk
+[0.383s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/bebop_client': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/bebop_client -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/bebop_client
+[0.386s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/bebop_server': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/bebop_server -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/bebop_server
+[0.390s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/bebop_teleop': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/bebop_teleop -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/bebop_teleop
+[2.693s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/ros2_parrot_arsdk' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/ros2_parrot_arsdk -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/ros2_parrot_arsdk
+[2.695s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/ros2_parrot_arsdk': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/ros2_parrot_arsdk -- -j16 -l16
+[2.713s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/bebop_teleop' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/bebop_teleop -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/bebop_teleop
+[2.714s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/bebop_teleop': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/bebop_teleop -- -j16 -l16
+[2.720s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/bebop_server' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/bebop_server -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/bebop_server
+[2.722s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/bebop_server': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/bebop_server -- -j16 -l16
+[2.725s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/bebop_client' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/bebop_client -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/bebop_client
+[2.727s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/bebop_client': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/bebop_client -- -j16 -l16
+[13.118s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/bebop_teleop' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/bebop_teleop -- -j16 -l16
+[13.128s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/bebop_teleop': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/bebop_teleop
+[13.144s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(bebop_teleop)
+[13.144s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/bebop_teleop' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/bebop_teleop
+[13.146s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop' for CMake module files
+[13.147s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop' for CMake config files
+[13.147s] Level 1:colcon.colcon_core.shell:create_environment_hook('bebop_teleop', 'cmake_prefix_path')
+[13.147s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/hook/cmake_prefix_path.ps1'
+[13.148s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/hook/cmake_prefix_path.dsv'
+[13.149s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/hook/cmake_prefix_path.sh'
+[13.149s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop/lib'
+[13.149s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop/bin'
+[13.150s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop/lib/pkgconfig/bebop_teleop.pc'
+[13.150s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop/lib/python3.10/site-packages'
+[13.150s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop/bin'
+[13.150s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/package.ps1'
+[13.152s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/package.dsv'
+[13.152s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/package.sh'
+[13.153s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/package.bash'
+[13.153s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/package.zsh'
+[13.154s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/max/bebop_ws/install/bebop_teleop/share/colcon-core/packages/bebop_teleop)
+[13.155s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(bebop_teleop)
+[13.155s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop' for CMake module files
+[13.155s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop' for CMake config files
+[13.155s] Level 1:colcon.colcon_core.shell:create_environment_hook('bebop_teleop', 'cmake_prefix_path')
+[13.155s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/hook/cmake_prefix_path.ps1'
+[13.156s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/hook/cmake_prefix_path.dsv'
+[13.156s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/hook/cmake_prefix_path.sh'
+[13.156s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop/lib'
+[13.156s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop/bin'
+[13.156s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop/lib/pkgconfig/bebop_teleop.pc'
+[13.157s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop/lib/python3.10/site-packages'
+[13.157s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_teleop/bin'
+[13.157s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/package.ps1'
+[13.158s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/package.dsv'
+[13.158s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/package.sh'
+[13.158s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/package.bash'
+[13.159s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_teleop/share/bebop_teleop/package.zsh'
+[13.159s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/max/bebop_ws/install/bebop_teleop/share/colcon-core/packages/bebop_teleop)
+[13.915s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/bebop_client' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/bebop_client -- -j16 -l16
+[13.917s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/bebop_client': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/bebop_client
+[13.930s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(bebop_client)
+[13.930s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client' for CMake module files
+[13.931s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/bebop_client' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/bebop_client
+[13.931s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client' for CMake config files
+[13.931s] Level 1:colcon.colcon_core.shell:create_environment_hook('bebop_client', 'cmake_prefix_path')
+[13.931s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/bebop_client/share/bebop_client/hook/cmake_prefix_path.ps1'
+[13.932s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/max/bebop_ws/install/bebop_client/share/bebop_client/hook/cmake_prefix_path.dsv'
+[13.932s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/bebop_client/share/bebop_client/hook/cmake_prefix_path.sh'
+[13.933s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client/lib'
+[13.933s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client/bin'
+[13.933s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client/lib/pkgconfig/bebop_client.pc'
+[13.933s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client/lib/python3.10/site-packages'
+[13.933s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client/bin'
+[13.933s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_client/share/bebop_client/package.ps1'
+[13.934s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/max/bebop_ws/install/bebop_client/share/bebop_client/package.dsv'
+[13.934s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_client/share/bebop_client/package.sh'
+[13.935s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_client/share/bebop_client/package.bash'
+[13.935s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_client/share/bebop_client/package.zsh'
+[13.935s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/max/bebop_ws/install/bebop_client/share/colcon-core/packages/bebop_client)
+[13.936s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(bebop_client)
+[13.936s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client' for CMake module files
+[13.937s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client' for CMake config files
+[13.937s] Level 1:colcon.colcon_core.shell:create_environment_hook('bebop_client', 'cmake_prefix_path')
+[13.937s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/bebop_client/share/bebop_client/hook/cmake_prefix_path.ps1'
+[13.937s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/max/bebop_ws/install/bebop_client/share/bebop_client/hook/cmake_prefix_path.dsv'
+[13.938s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/bebop_client/share/bebop_client/hook/cmake_prefix_path.sh'
+[13.938s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client/lib'
+[13.938s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client/bin'
+[13.938s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client/lib/pkgconfig/bebop_client.pc'
+[13.938s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client/lib/python3.10/site-packages'
+[13.939s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_client/bin'
+[13.939s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_client/share/bebop_client/package.ps1'
+[13.939s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/max/bebop_ws/install/bebop_client/share/bebop_client/package.dsv'
+[13.940s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_client/share/bebop_client/package.sh'
+[13.940s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_client/share/bebop_client/package.bash'
+[13.940s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_client/share/bebop_client/package.zsh'
+[13.941s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/max/bebop_ws/install/bebop_client/share/colcon-core/packages/bebop_client)
+[17.758s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/bebop_server' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/bebop_server -- -j16 -l16
+[17.760s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/bebop_server': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/bebop_server
+[17.776s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(bebop_server)
+[17.776s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/bebop_server' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/bebop_server
+[17.777s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server' for CMake module files
+[17.777s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server' for CMake config files
+[17.777s] Level 1:colcon.colcon_core.shell:create_environment_hook('bebop_server', 'cmake_prefix_path')
+[17.777s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/bebop_server/share/bebop_server/hook/cmake_prefix_path.ps1'
+[17.778s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/max/bebop_ws/install/bebop_server/share/bebop_server/hook/cmake_prefix_path.dsv'
+[17.778s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/bebop_server/share/bebop_server/hook/cmake_prefix_path.sh'
+[17.779s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server/lib'
+[17.779s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server/bin'
+[17.779s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server/lib/pkgconfig/bebop_server.pc'
+[17.779s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server/lib/python3.10/site-packages'
+[17.779s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server/bin'
+[17.779s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_server/share/bebop_server/package.ps1'
+[17.780s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/max/bebop_ws/install/bebop_server/share/bebop_server/package.dsv'
+[17.780s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_server/share/bebop_server/package.sh'
+[17.780s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_server/share/bebop_server/package.bash'
+[17.780s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_server/share/bebop_server/package.zsh'
+[17.781s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/max/bebop_ws/install/bebop_server/share/colcon-core/packages/bebop_server)
+[17.781s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(bebop_server)
+[17.781s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server' for CMake module files
+[17.782s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server' for CMake config files
+[17.782s] Level 1:colcon.colcon_core.shell:create_environment_hook('bebop_server', 'cmake_prefix_path')
+[17.782s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/bebop_server/share/bebop_server/hook/cmake_prefix_path.ps1'
+[17.782s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/max/bebop_ws/install/bebop_server/share/bebop_server/hook/cmake_prefix_path.dsv'
+[17.782s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/bebop_server/share/bebop_server/hook/cmake_prefix_path.sh'
+[17.783s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server/lib'
+[17.783s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server/bin'
+[17.783s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server/lib/pkgconfig/bebop_server.pc'
+[17.783s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server/lib/python3.10/site-packages'
+[17.783s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/bebop_server/bin'
+[17.784s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_server/share/bebop_server/package.ps1'
+[17.784s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/max/bebop_ws/install/bebop_server/share/bebop_server/package.dsv'
+[17.784s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_server/share/bebop_server/package.sh'
+[17.785s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_server/share/bebop_server/package.bash'
+[17.785s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/bebop_server/share/bebop_server/package.zsh'
+[17.785s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/max/bebop_ws/install/bebop_server/share/colcon-core/packages/bebop_server)
+[128.120s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/ros2_parrot_arsdk' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/ros2_parrot_arsdk -- -j16 -l16
+[128.122s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/ros2_parrot_arsdk': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/ros2_parrot_arsdk
+[128.305s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(ros2_parrot_arsdk)
+[128.305s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk' for CMake module files
+[128.311s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk' for CMake config files
+[128.321s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/ros2_parrot_arsdk' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/ros2_parrot_arsdk
+[128.323s] Level 1:colcon.colcon_core.shell:create_environment_hook('ros2_parrot_arsdk', 'cmake_prefix_path')
+[128.323s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/hook/cmake_prefix_path.ps1'
+[128.323s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/hook/cmake_prefix_path.dsv'
+[128.323s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/hook/cmake_prefix_path.sh'
+[128.324s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk/lib'
+[128.324s] Level 1:colcon.colcon_core.shell:create_environment_hook('ros2_parrot_arsdk', 'ld_library_path_lib')
+[128.324s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/hook/ld_library_path_lib.ps1'
+[128.325s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/hook/ld_library_path_lib.dsv'
+[128.325s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/hook/ld_library_path_lib.sh'
+[128.325s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk/bin'
+[128.325s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk/lib/pkgconfig/ros2_parrot_arsdk.pc'
+[128.325s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk/lib/python3.10/site-packages'
+[128.325s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk/bin'
+[128.326s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/package.ps1'
+[128.326s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/package.dsv'
+[128.326s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/package.sh'
+[128.327s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/package.bash'
+[128.327s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/package.zsh'
+[128.327s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/max/bebop_ws/install/ros2_parrot_arsdk/share/colcon-core/packages/ros2_parrot_arsdk)
+[128.328s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(ros2_parrot_arsdk)
+[128.328s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk' for CMake module files
+[128.328s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk' for CMake config files
+[128.329s] Level 1:colcon.colcon_core.shell:create_environment_hook('ros2_parrot_arsdk', 'cmake_prefix_path')
+[128.329s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/hook/cmake_prefix_path.ps1'
+[128.329s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/hook/cmake_prefix_path.dsv'
+[128.329s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/hook/cmake_prefix_path.sh'
+[128.330s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk/lib'
+[128.330s] Level 1:colcon.colcon_core.shell:create_environment_hook('ros2_parrot_arsdk', 'ld_library_path_lib')
+[128.330s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/hook/ld_library_path_lib.ps1'
+[128.330s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/hook/ld_library_path_lib.dsv'
+[128.330s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/hook/ld_library_path_lib.sh'
+[128.330s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk/bin'
+[128.330s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk/lib/pkgconfig/ros2_parrot_arsdk.pc'
+[128.331s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk/lib/python3.10/site-packages'
+[128.331s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_parrot_arsdk/bin'
+[128.331s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/package.ps1'
+[128.331s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/package.dsv'
+[128.336s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/package.sh'
+[128.336s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/package.bash'
+[128.337s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_parrot_arsdk/share/ros2_parrot_arsdk/package.zsh'
+[128.337s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/max/bebop_ws/install/ros2_parrot_arsdk/share/colcon-core/packages/ros2_parrot_arsdk)
+[128.337s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/max/bebop_ws/src/ros2_bebop_driver' with build type 'ament_cmake'
+[128.337s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/max/bebop_ws/src/ros2_bebop_driver'
+[128.337s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[128.337s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[128.360s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/ros2_bebop_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/ros2_bebop_driver -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/ros2_bebop_driver
+[131.266s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/ros2_bebop_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/ros2_bebop_driver -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/ros2_bebop_driver
+[131.268s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/ros2_bebop_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/ros2_bebop_driver -- -j16 -l16
+[158.049s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/ros2_bebop_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/ros2_bebop_driver -- -j16 -l16
+[158.051s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/max/bebop_ws/build/ros2_bebop_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/ros2_bebop_driver
+[158.093s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(ros2_bebop_driver)
+[158.093s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver' for CMake module files
+[158.094s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/max/bebop_ws/build/ros2_bebop_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/ros2_bebop_driver
+[158.094s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver' for CMake config files
+[158.094s] Level 1:colcon.colcon_core.shell:create_environment_hook('ros2_bebop_driver', 'cmake_prefix_path')
+[158.094s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/hook/cmake_prefix_path.ps1'
+[158.095s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/hook/cmake_prefix_path.dsv'
+[158.095s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/hook/cmake_prefix_path.sh'
+[158.095s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver/lib'
+[158.095s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver/bin'
+[158.095s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver/lib/pkgconfig/ros2_bebop_driver.pc'
+[158.096s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver/lib/python3.10/site-packages'
+[158.096s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver/bin'
+[158.096s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/package.ps1'
+[158.097s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/package.dsv'
+[158.097s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/package.sh'
+[158.097s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/package.bash'
+[158.098s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/package.zsh'
+[158.098s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/max/bebop_ws/install/ros2_bebop_driver/share/colcon-core/packages/ros2_bebop_driver)
+[158.099s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(ros2_bebop_driver)
+[158.099s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver' for CMake module files
+[158.099s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver' for CMake config files
+[158.099s] Level 1:colcon.colcon_core.shell:create_environment_hook('ros2_bebop_driver', 'cmake_prefix_path')
+[158.100s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/hook/cmake_prefix_path.ps1'
+[158.100s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/hook/cmake_prefix_path.dsv'
+[158.100s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/hook/cmake_prefix_path.sh'
+[158.101s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver/lib'
+[158.101s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver/bin'
+[158.101s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver/lib/pkgconfig/ros2_bebop_driver.pc'
+[158.101s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver/lib/python3.10/site-packages'
+[158.102s] Level 1:colcon.colcon_core.environment:checking '/home/max/bebop_ws/install/ros2_bebop_driver/bin'
+[158.102s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/package.ps1'
+[158.103s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/package.dsv'
+[158.103s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/package.sh'
+[158.104s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/package.bash'
+[158.104s] INFO:colcon.colcon_core.shell:Creating package script '/home/max/bebop_ws/install/ros2_bebop_driver/share/ros2_bebop_driver/package.zsh'
+[158.104s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/max/bebop_ws/install/ros2_bebop_driver/share/colcon-core/packages/ros2_bebop_driver)
+[158.105s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[158.105s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[158.105s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[158.105s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[158.119s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[158.119s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[158.119s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[158.134s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[158.135s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/max/bebop_ws/install/local_setup.ps1'
+[158.136s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/max/bebop_ws/install/_local_setup_util_ps1.py'
+[158.138s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/max/bebop_ws/install/setup.ps1'
+[158.139s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/max/bebop_ws/install/local_setup.sh'
+[158.139s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/max/bebop_ws/install/_local_setup_util_sh.py'
+[158.140s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/max/bebop_ws/install/setup.sh'
+[158.140s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/max/bebop_ws/install/local_setup.bash'
+[158.141s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/max/bebop_ws/install/setup.bash'
+[158.142s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/max/bebop_ws/install/local_setup.zsh'
+[158.143s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/max/bebop_ws/install/setup.zsh'

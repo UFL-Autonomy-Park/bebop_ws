@@ -1,0 +1,6 @@
+Invoking command in '/home/max/bebop_ws/build/bebop_server': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/bebop_server -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/bebop_server
+Invoked command in '/home/max/bebop_ws/build/bebop_server' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/bebop_server -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/bebop_server
+Invoking command in '/home/max/bebop_ws/build/bebop_server': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/bebop_server -- -j16 -l16
+Invoked command in '/home/max/bebop_ws/build/bebop_server' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/bebop_server -- -j16 -l16
+Invoking command in '/home/max/bebop_ws/build/bebop_server': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/bebop_server
+Invoked command in '/home/max/bebop_ws/build/bebop_server' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/bebop_server
