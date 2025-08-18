@@ -1,3 +1,8 @@
+# Workspace specifc
+install/
+log/
+build/
+
 # This gitignore is a combination of the standard C, C++, ROS, and Python gitignores on
 # https://github.com/github/gitignore
 

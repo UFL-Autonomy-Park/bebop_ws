@@ -1,4 +1,0 @@
-[01m[K/home/max/bebop_ws/src/ros_vrpn_client/vrpn/vrpn_EndpointContainer.C:[m[K In member function ‘[01m[Kvoid vrpn::EndpointContainer::compact_()[m[K’:
-[01m[K/home/max/bebop_ws/src/ros_vrpn_client/vrpn/vrpn_EndpointContainer.C:91:19:[m[K [01;35m[Kwarning: [m[Kunused variable ‘[01m[Kbefore[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-variable-Wunused-variable]8;;[m[K]
-   91 |         size_type [01;35m[Kbefore[m[K = get_full_container_size();
-      |                   [01;35m[K^~~~~~[m[K

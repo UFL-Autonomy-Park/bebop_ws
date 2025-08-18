@@ -1,6 +1,0 @@
-Invoking command in '/home/max/bebop_ws/build/ros2_bebop_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/ros2_bebop_driver -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/ros2_bebop_driver
-Invoked command in '/home/max/bebop_ws/build/ros2_bebop_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/max/bebop_ws/src/ros2_bebop_driver -DCMAKE_INSTALL_PREFIX=/home/max/bebop_ws/install/ros2_bebop_driver
-Invoking command in '/home/max/bebop_ws/build/ros2_bebop_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/ros2_bebop_driver -- -j16 -l16
-Invoked command in '/home/max/bebop_ws/build/ros2_bebop_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/max/bebop_ws/build/ros2_bebop_driver -- -j16 -l16
-Invoking command in '/home/max/bebop_ws/build/ros2_bebop_driver': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/ros2_bebop_driver
-Invoked command in '/home/max/bebop_ws/build/ros2_bebop_driver' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/max/bebop_ws/build/ros2_bebop_driver
