@@ -1,7 +1,0 @@
-<launch>
-    <arg name="name" default="crazy"/>
-    <node pkg="ros_vrpn_client" exec="ros_vrpn_client" name="crazy">
-        <param name="vrpn_ip" value="192.168.1.104"/>
-        <param name="my_int" value="3884"/>
-    </node>
-</launch>
