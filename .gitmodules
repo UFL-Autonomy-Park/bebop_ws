@@ -1,0 +1,18 @@
+[submodule "bebop_client"]
+	path = bebop_client
+	url = git@github.com:UFL-Autonomy-Park/bebop_client.git
+[submodule "bebop_server"]
+	path = bebop_server
+	url = git@github.com:UFL-Autonomy-Park/bebop_server.git
+[submodule "bebop_teleop"]
+	path = bebop_teleop
+	url = git@github.com:UFL-Autonomy-Park/bebop_teleop.git
+[submodule "ros2_bebop_driver"]
+	path = ros2_bebop_driver
+	url = git@github.com:UFL-Autonomy-Park/ros2_bebop_driver.git
+[submodule "ros2_bebop_arsdk"]
+	path = ros2_bebop_arsdk
+	url = git@github.com:UFL-Autonomy-Park/ros2_bebop_arsdk
+[submodule "vrpn_mocap"]
+	path = vrpn_mocap
+	url = git@github.com:UFL-Autonomy-Park/vrpn_mocap
