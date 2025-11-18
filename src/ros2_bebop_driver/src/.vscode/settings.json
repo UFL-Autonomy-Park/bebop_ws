@@ -1,0 +1,16 @@
+{
+  "python.autoComplete.extraPaths": [
+    "/home/brandonfallin@ad.ufl.edu/test_ws/install/bebop_teleop/lib/python3.10/site-packages",
+    "/home/brandonfallin@ad.ufl.edu/bebop_ws/install/bebop_supervisor/lib/python3.10/site-packages",
+    "/home/brandonfallin@ad.ufl.edu/bebop_ws/install/bebop_control/lib/python3.10/site-packages",
+    "/opt/ros/humble/lib/python3.10/site-packages",
+    "/opt/ros/humble/local/lib/python3.10/dist-packages"
+  ],
+  "python.analysis.extraPaths": [
+    "/home/brandonfallin@ad.ufl.edu/test_ws/install/bebop_teleop/lib/python3.10/site-packages",
+    "/home/brandonfallin@ad.ufl.edu/bebop_ws/install/bebop_supervisor/lib/python3.10/site-packages",
+    "/home/brandonfallin@ad.ufl.edu/bebop_ws/install/bebop_control/lib/python3.10/site-packages",
+    "/opt/ros/humble/lib/python3.10/site-packages",
+    "/opt/ros/humble/local/lib/python3.10/dist-packages"
+  ]
+}

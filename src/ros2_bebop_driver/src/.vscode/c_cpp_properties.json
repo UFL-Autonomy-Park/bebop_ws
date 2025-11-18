@@ -1,0 +1,23 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/brandonfallin@ad.ufl.edu/test_ws/install/ros2_parrot_arsdk/include/**",
+        "/home/brandonfallin@ad.ufl.edu/bebop_ws/install/px4_safety_lib/include/**",
+        "/opt/ros/humble/include/**",
+        "/home/brandonfallin@ad.ufl.edu/test_ws/src/ros2_bebop_driver/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

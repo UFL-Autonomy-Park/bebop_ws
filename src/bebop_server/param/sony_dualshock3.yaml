@@ -1,0 +1,14 @@
+/**:
+  ros__parameters:
+    x_axis: 4
+    y_axis: 3
+    z_axis: 2
+    yaw_axis: 1
+
+    takeoff_button: 8
+    land_button: 7
+
+    x_vel_max: 1.0
+    y_vel_max: 1.0
+    z_vel_max: 1.0
+    yaw_vel_max: 1.0

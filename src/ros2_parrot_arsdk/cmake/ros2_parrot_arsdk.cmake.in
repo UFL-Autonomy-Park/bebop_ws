@@ -1,0 +1,3 @@
+set(ARSDK_LIB_DIR @CMAKE_INSTALL_PREFIX@/lib)
+set(ARSDK_LIBS arcommands arcontroller ardatatransfer ardiscovery armavlink armedia arnetworkal arnetwork arsal arstream2 arstream arupdater arutils)
+set(ARSDK_HASH @ARSDK_MANIFEST_HASH@)
