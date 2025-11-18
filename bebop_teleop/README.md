@@ -1,2 +1,0 @@
-# bebop_teleop
-
