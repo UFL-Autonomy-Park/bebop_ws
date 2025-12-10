@@ -2,6 +2,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.actions import ExecuteProcess
 
 def generate_launch_description():
     config = os.path.join(
@@ -19,7 +20,16 @@ def generate_launch_description():
         ),
         Node(
             package='rho_filter_eval',
-            executable='eval_node',
-            name='eval_node'
+            executable='signal_publisher',
+            name='signal_publisher'
+        ),
+        ExecuteProcess(
+            cmd=[
+                'ros2', 'run', 'rqt_plot', 'rqt_plot',
+                '/error_twist/twist/linear/x',
+                '/estimated_twist/twist/linear/x',
+                '/reference_twist/twist/linear/x'
+            ],
+            output='screen'
         )
     ])
