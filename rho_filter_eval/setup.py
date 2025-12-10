@@ -28,7 +28,7 @@ setup(
     entry_points={
         'console_scripts': [
             'signal_publisher = rho_filter_eval.signal_publisher:main',
-            'error_monitor = rho_filter_eval.error_monitor:main',
+            'eval_node = rho_filter_eval.eval_node:main',
         ],
     },
 )
