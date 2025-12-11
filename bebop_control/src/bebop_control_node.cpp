@@ -64,9 +64,9 @@ public:
         std::string cmd_vel_topic = this->get_parameter("cmd_vel_topic").as_string();
         cmd_vel_pub_ = this->create_publisher<geometry_msgs::msg::Twist>(cmd_vel_topic, 10);
 
-        // Control loop timer (50 Hz)
-        control_timer_ = this->create_wall_timer(
-            20ms, std::bind(&BebopControlNode::controlLoop, this));
+        // // Control loop timer (50 Hz)
+        // control_timer_ = this->create_wall_timer(
+        //     20ms, std::bind(&BebopControlNode::controlLoop, this));
 
         // Log
         RCLCPP_INFO(this->get_logger(), "Low-level Bebop controller active. Listening for %s", des_vel_topic.c_str());
@@ -100,6 +100,7 @@ private:
         target_vel_world_ = *msg;
         last_cmd_time_ = this->now();
         cmd_received_ = true;
+        controlLoop();
     }
 
     void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg) {
@@ -224,7 +225,7 @@ private:
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr des_vel_sub_;
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
     rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr bebop_mode_sub_;
-    rclcpp::TimerBase::SharedPtr control_timer_;
+    // rclcpp::TimerBase::SharedPtr control_timer_;
 
 };
 
