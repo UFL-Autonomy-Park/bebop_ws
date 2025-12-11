@@ -1,0 +1,6 @@
+/figure_eight_node:
+  ros__parameters:
+    vert_offset: 0.75 # m
+    update_rate: 50.0 # Hz
+    tracking_kp: 0.25 
+    heading_kp: 0.0
