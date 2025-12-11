@@ -10,26 +10,18 @@ def generate_launch_description():
         'filters.yaml'
     )
 
+    # Namespace definition
+    robot_ns = 'bebop104'
+
     return LaunchDescription([
         Node(
             package='mocap_filters',
-            executable='levant_node',
-            name='levant_node',
-            namespace='bebop104',
-            parameters=[config]
-        ),
-        Node(
-            package='mocap_filters',
-            executable='kalman_node',
-            name='kalman_node',
-            namespace='bebop104',
-            parameters=[config]
-        ),
-        Node(
-            package='mocap_filters',
-            executable='rho_node',
-            name='rho_node',
-            namespace='bebop104',
-            parameters=[config]
+            executable='filters_node',
+            name='mocap_filters',
+            namespace=robot_ns,
+            parameters=[config],
+            output='screen',
+            # Remap input if necessary, otherwise use param in yaml
+            # remappings=[('pose', '/vrpn_mocap/bebop104/pose')] 
         )
     ])

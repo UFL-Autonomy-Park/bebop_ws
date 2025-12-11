@@ -1,0 +1,175 @@
+#include "rclcpp/rclcpp.hpp"
+#include "nav_msgs/msg/odometry.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
+#include "tf2_eigen/tf2_eigen.hpp"
+#include "tf2/LinearMath/Matrix3x3.h"
+
+// Filter Headers
+#include "mocap_filters/LevantFilter.hpp"
+#include "mocap_filters/KalmanFilter.hpp"
+#include "mocap_filters/RhoFilter.hpp"
+
+using namespace std::chrono_literals;
+
+class MocapFiltersNode : public rclcpp::Node {
+public:
+    MocapFiltersNode() : Node("mocap_filters_node"), initialized_(false) {
+        // --- Parameters ---
+        // Frames & Topics
+        auto parent_frame = this->declare_parameter<std::string>("frames.parent", "world");
+        auto child_frame = this->declare_parameter<std::string>("frames.child", "base_link");
+        auto input_topic = this->declare_parameter<std::string>("topics.input_pose", "pose");
+        double freq = this->declare_parameter<double>("frequency", 100.0);
+        dt_ = 1.0 / freq;
+
+        // Levant Params
+        double lev_C = this->declare_parameter<double>("levant.C", 2.0);
+        
+        // Rho Params
+        double rho_k1 = this->declare_parameter<double>("rho.k1", 20.0);
+        double rho_k2 = this->declare_parameter<double>("rho.k2", 20.0);
+        double rho_k3 = this->declare_parameter<double>("rho.k3", 6.0);
+        double rho_alpha = this->declare_parameter<double>("rho.alpha", 0.25);
+
+        // Kalman Params (Process Noise diagonals)
+        double kal_q_pos = this->declare_parameter<double>("kalman.Q_pos", 1e-6);
+        double kal_q_vel = this->declare_parameter<double>("kalman.Q_vel", 0.5);
+
+        // --- Initialization ---
+        // Levant
+        levant_ = std::make_unique<mocap_filters::LevantFilter>(lev_C, dt_);
+
+        // Rho
+        rho_ = std::make_unique<mocap_filters::RhoFilter>(dt_, 3, rho_alpha, rho_k1, rho_k2, rho_k3);
+
+        // Kalman
+        kalman_ = std::make_unique<mocap_filters::KalmanFilter>();
+        Eigen::Matrix<double, 12, 12> u_cov = Eigen::Matrix<double, 12, 12>::Zero();
+        u_cov.topLeftCorner<6,6>() = Eigen::Matrix<double, 6, 6>::Identity() * kal_q_pos;
+        u_cov.bottomRightCorner<6,6>() = Eigen::Matrix<double, 6, 6>::Identity() * kal_q_vel;
+        kalman_->init(u_cov, Eigen::Matrix<double, 6, 6>::Identity() * 1e-4, freq);
+
+        // --- Communication ---
+        // Note: Output topics are hardcoded relative to the node namespace
+        pub_levant_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/levant", 10);
+        pub_rho_    = this->create_publisher<nav_msgs::msg::Odometry>("odom/rho", 10);
+        pub_kalman_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/kalman", 10);
+
+        sub_pose_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
+            input_topic, rclcpp::SensorDataQoS(),
+            [this](geometry_msgs::msg::PoseStamped::SharedPtr msg) {
+                last_pose_ = *msg;
+                process(msg);
+            });
+
+        // Store frames for publishing
+        odom_msg_template_.header.frame_id = parent_frame;
+        odom_msg_template_.child_frame_id = child_frame;
+    }
+
+private:
+    void process(const geometry_msgs::msg::PoseStamped::SharedPtr& msg) {
+        double t = msg->header.stamp.sec + msg->header.stamp.nanosec * 1e-9;
+        
+        // 1. Unpack Raw Data
+        Eigen::Vector3d p_raw;
+        Eigen::Quaterniond q_raw;
+        tf2::fromMsg(msg->pose.position, p_raw);
+        tf2::fromMsg(msg->pose.orientation, q_raw);
+
+        // 2. Filter Propagation
+        // Levant
+        levant_->propagate(p_raw);
+        
+        // Rho (Requires Matrix cast)
+        Eigen::MatrixXd p_rho_in = p_raw;
+        rho_->propagate_filter(p_rho_in);
+
+        // Kalman
+        if (!kalman_->isReady()) {
+            kalman_->prepareInitialCondition(t, q_raw, p_raw);
+            return; // Kalman needs initialization time, skip publishing until ready
+        }
+        kalman_->prediction(t);
+        kalman_->update(q_raw, p_raw);
+
+        // 3. Centralized Coordinate Transformation
+        // Transform: Mocap World (Y-up) -> ROS World (Z-up/ENU)
+        // Static rotation +90 deg about X
+        static const Eigen::Quaterniond q_w2enu(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d::UnitX()));
+        
+        // Orientation
+        Eigen::Quaterniond q_enu = q_w2enu * q_raw;
+
+        // Yaw Extraction for Body Velocity Rotation
+        double roll, pitch, yaw;
+        tf2::Matrix3x3(tf2::Quaternion(q_enu.x(), q_enu.y(), q_enu.z(), q_enu.w())).getRPY(roll, pitch, yaw);
+        Eigen::Quaterniond q_yaw_inv(Eigen::AngleAxisd(-yaw, Eigen::Vector3d::UnitZ()));
+
+        // --- Helper to publish ---
+        auto publish_odom = [&](rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr& pub, 
+                                const Eigen::Vector3d& p_est, 
+                                const Eigen::Vector3d& v_est,
+                                const Eigen::Vector3d& w_est = Eigen::Vector3d::Zero()) {
+            
+            nav_msgs::msg::Odometry odom = odom_msg_template_;
+            odom.header.stamp = this->now();
+
+            // Position: Rotate Estimate to ENU
+            Eigen::Vector3d p_enu = q_w2enu * p_est;
+            odom.pose.pose.position = tf2::toMsg(p_enu);
+            odom.pose.pose.orientation = tf2::toMsg(q_enu); // Orientation comes from Mocap (common)
+
+            // Velocity: Rotate Estimate to ENU, then de-rotate Yaw to get Body Frame
+            Eigen::Vector3d v_enu = q_w2enu * v_est;
+            Eigen::Vector3d v_body = q_yaw_inv * v_enu;
+            
+            odom.twist.twist.linear.x = v_body.x();
+            odom.twist.twist.linear.y = v_body.y();
+            odom.twist.twist.linear.z = v_body.z();
+
+            // Angular Velocity (Only Kalman provides this, others zero)
+            if (w_est.norm() > 1e-6) {
+                Eigen::Vector3d w_enu = q_w2enu * w_est;
+                Eigen::Vector3d w_body = q_yaw_inv * w_enu;
+                odom.twist.twist.angular.x = w_body.x();
+                odom.twist.twist.angular.y = w_body.y();
+                odom.twist.twist.angular.z = w_body.z();
+            }
+
+            pub->publish(odom);
+        };
+
+        // 4. Publish All
+        publish_odom(pub_levant_, levant_->getPosition(), levant_->getVelocity());
+        
+        // Rho returns Matrix, cast to Vector
+        Eigen::Vector3d rho_p = rho_->get_position_estimate();
+        Eigen::Vector3d rho_v = rho_->get_velocity_estimate();
+        publish_odom(pub_rho_, rho_p, rho_v);
+
+        publish_odom(pub_kalman_, kalman_->position, kalman_->linear_vel, kalman_->angular_vel);
+    }
+
+    // State
+    bool initialized_;
+    double dt_;
+    geometry_msgs::msg::PoseStamped last_pose_;
+    nav_msgs::msg::Odometry odom_msg_template_;
+
+    // Filters
+    std::unique_ptr<mocap_filters::LevantFilter> levant_;
+    std::unique_ptr<mocap_filters::KalmanFilter> kalman_;
+    std::unique_ptr<mocap_filters::RhoFilter> rho_;
+
+    // Pubs/Subs
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pub_levant_, pub_rho_, pub_kalman_;
+    rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr sub_pose_;
+};
+
+int main(int argc, char** argv) {
+    rclcpp::init(argc, argv);
+    rclcpp::spin(std::make_shared<MocapFiltersNode>());
+    rclcpp::shutdown();
+    return 0;
+}

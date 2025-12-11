@@ -17,32 +17,30 @@ find_package(Eigen3 REQUIRED)
 
 include_directories(include)
 
-# Filter Library
+# 1. Filter Logic Library
 add_library(${PROJECT_NAME}_lib
   src/KalmanFilter.cpp
-  src/LevantFilter.cpp
   src/RhoFilter.cpp
+  # Levant is header-only in this setup unless you moved implementation to .cpp
 )
 target_link_libraries(${PROJECT_NAME}_lib Eigen3::Eigen)
 
-# Nodes
-add_executable(levant_node src/levant_node.cpp)
-target_link_libraries(levant_node ${PROJECT_NAME}_lib Eigen3::Eigen)
-ament_target_dependencies(levant_node rclcpp geometry_msgs nav_msgs tf2 tf2_eigen)
+# 2. Single Node Executable
+add_executable(filters_node src/filters_node.cpp)
+target_link_libraries(filters_node ${PROJECT_NAME}_lib Eigen3::Eigen)
+ament_target_dependencies(filters_node 
+  rclcpp 
+  geometry_msgs 
+  nav_msgs 
+  tf2 
+  tf2_eigen 
+  tf2_geometry_msgs
+)
 
-add_executable(kalman_node src/kalman_node.cpp)
-target_link_libraries(kalman_node ${PROJECT_NAME}_lib Eigen3::Eigen)
-ament_target_dependencies(kalman_node rclcpp geometry_msgs nav_msgs tf2 tf2_eigen)
-
-add_executable(rho_node src/rho_node.cpp)
-target_link_libraries(rho_node ${PROJECT_NAME}_lib Eigen3::Eigen)
-ament_target_dependencies(rho_node rclcpp geometry_msgs nav_msgs tf2 tf2_eigen tf2_geometry_msgs)
-
+# 3. Install
 install(TARGETS 
   ${PROJECT_NAME}_lib 
-  levant_node 
-  kalman_node 
-  rho_node
+  filters_node
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
