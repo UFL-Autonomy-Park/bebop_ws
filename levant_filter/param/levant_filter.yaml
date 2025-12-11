@@ -1,0 +1,6 @@
+levant_node:
+  ros__parameters:
+    lipschitz_constant: 2.0
+    filter_period_ms: 10
+    parent_frame: "world"
+    child_frame: "bebop104/base_link"
