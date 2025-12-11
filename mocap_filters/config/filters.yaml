@@ -1,0 +1,23 @@
+levant_node:
+  ros__parameters:
+    lipschitz_constant: 2.0
+    filter_period_ms: 10
+    parent_frame: "world"
+    child_frame: "bebop104/base_link"
+
+kalman_node:
+  ros__parameters:
+    input_topic: "/vrpn_mocap/bebop104/pose"
+    output_topic: "kalman_filtered_odom"
+    parent_frame: "world"
+    child_frame: "bebop104/base_link"
+
+rho_node:
+  ros__parameters:
+    k1: 20.0
+    k2: 20.0
+    k3: 6.0
+    alpha: 0.25
+    filter_period_ms: 10
+    parent_frame: "world"
+    child_frame: "bebop104/base_link"
