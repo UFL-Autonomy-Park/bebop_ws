@@ -17,10 +17,8 @@ mocap_filters_node:
       k3: 1.0
 
     kalman:
-      # Tuning: Low Q_vel to smooth ripples, Low Q_pos to trust model integration
-      # The R (Measurement Noise) is hardcoded low (1e-5) in cpp to trust MoCap position
       Q_pos: 0.0001
-      Q_vel: 0.0001
+      Q_vel: 0.1
 
     baseline:
-      dirty_N: 20.0 # Cutoff frequency (rad/s)
+      dirty_N: 20.0
