@@ -2,9 +2,9 @@ mocap_filters_node:
   ros__parameters:
     frames:
       parent: "world"
-      child: "drone_body"
+      child: "body_fixed"
     topics:
-      input_pose: "/vrpn_client_node/drone/pose"
+      input_pose: "/vrpn_mocap/bebop104/pose"
     frequency: 100.0
 
     levant:
