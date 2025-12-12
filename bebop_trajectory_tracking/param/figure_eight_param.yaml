@@ -2,5 +2,5 @@
   ros__parameters:
     vert_offset: 0.75 # m
     update_rate: 50.0 # Hz
-    tracking_kp: 0.25 
-    heading_kp: 0.0
+    tracking_kp: 0.75 
+    heading_kp: 1.0

@@ -5,10 +5,10 @@ bebop_control_node:
     max_vert_speed: 1.0   
 
     # Gains (Body Frame)
-    kp_xy: 0.1 # ENU   
+    kp_xy: 0.15 # ENU   
     ki_xy: 0.00 # ENU      
     kd_xy: 0.0 # ENU       
-    kp_z: 0.15 # ENU              
+    kp_z: 0.2 # ENU              
 
     # Topics
     odom_topic: "/bebop104/filtered_odom"

@@ -64,10 +64,6 @@ public:
         std::string cmd_vel_topic = this->get_parameter("cmd_vel_topic").as_string();
         cmd_vel_pub_ = this->create_publisher<geometry_msgs::msg::Twist>(cmd_vel_topic, 10);
 
-        // // Control loop timer (50 Hz)
-        // control_timer_ = this->create_wall_timer(
-        //     20ms, std::bind(&BebopControlNode::controlLoop, this));
-
         // Log
         RCLCPP_INFO(this->get_logger(), "Low-level Bebop controller active. Listening for %s", des_vel_topic.c_str());
     }
