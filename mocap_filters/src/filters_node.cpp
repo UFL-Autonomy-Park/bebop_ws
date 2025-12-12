@@ -1,3 +1,4 @@
+#include <mutex>
 #include "rclcpp/rclcpp.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
@@ -12,9 +13,8 @@ using namespace std::chrono_literals;
 
 class MocapFiltersNode : public rclcpp::Node {
 public:
-    MocapFiltersNode() : Node("mocap_filters_node"), initialized_(false) {
-        // --- Parameters (No Defaults) ---
-        // Frames & Topics
+    MocapFiltersNode() : Node("mocap_filters_node"), has_data_(false) {
+        // --- Parameters ---
         auto parent_frame = this->declare_parameter<std::string>("frames.parent");
         auto child_frame = this->declare_parameter<std::string>("frames.child");
         auto input_topic = this->declare_parameter<std::string>("topics.input_pose");
@@ -52,37 +52,57 @@ public:
         last_pos_dirty_.setZero();
 
         // --- Communication ---
-        pub_levant_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/levant", 10);
-        pub_rho_    = this->create_publisher<nav_msgs::msg::Odometry>("odom/rho", 10);
-        pub_kalman_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/kalman", 10);
-        pub_baseline_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/baseline", 10);
+        pub_levant_  = this->create_publisher<nav_msgs::msg::Odometry>("odom/levant", 10);
+        pub_rho_     = this->create_publisher<nav_msgs::msg::Odometry>("odom/rho", 10);
+        pub_kalman_  = this->create_publisher<nav_msgs::msg::Odometry>("odom/kalman", 10);
+        pub_dirty_   = this->create_publisher<nav_msgs::msg::Odometry>("odom/dirty", 10);
+        pub_numeric_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/numeric", 10);
 
+        // Subscriber: Only updates the latest data buffer
         sub_pose_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
             input_topic, rclcpp::SensorDataQoS(),
             [this](geometry_msgs::msg::PoseStamped::SharedPtr msg) {
-                process(msg);
+                std::lock_guard<std::mutex> lock(data_mutex_);
+                latest_msg_ = msg;
+                has_data_ = true;
             });
+
+        // Timer: Runs the filters at strict fixed frequency
+        auto period = std::chrono::duration<double>(dt_);
+        timer_ = this->create_wall_timer(period, std::bind(&MocapFiltersNode::timer_callback, this));
 
         odom_msg_template_.header.frame_id = parent_frame;
         odom_msg_template_.child_frame_id = child_frame;
     }
 
 private:
-    void process(const geometry_msgs::msg::PoseStamped::SharedPtr& msg) {
-        double t = msg->header.stamp.sec + msg->header.stamp.nanosec * 1e-9;
+    void timer_callback() {
+        if (!has_data_) return;
+
+        // 1. Thread-safe data retrieval
+        geometry_msgs::msg::PoseStamped::SharedPtr msg_copy;
+        {
+            std::lock_guard<std::mutex> lock(data_mutex_);
+            msg_copy = latest_msg_; 
+        } // mutex unlocks here
+
+        double t = this->now().seconds(); // Use ROS time or msg stamp depending on requirement. Using wall time for filter consistency.
         
         Eigen::Vector3d p_raw;
         Eigen::Quaterniond q_raw;
-        tf2::fromMsg(msg->pose.position, p_raw);
-        tf2::fromMsg(msg->pose.orientation, q_raw);
+        tf2::fromMsg(msg_copy->pose.position, p_raw);
+        tf2::fromMsg(msg_copy->pose.orientation, q_raw);
 
+        // 2. Initialization on first valid data
         if (!initialized_) {
             last_pos_numeric_ = p_raw;
             last_pos_dirty_ = p_raw;
             initialized_ = true;
+            // For Kalman, we might want to wait, but this is fine for now
         }
 
-        // Propagate
+        // --- Filters Propagate/Update ---
+        // These now run strictly at dt_ intervals using whatever p_raw is current
         levant_->propagate(p_raw);
         
         Eigen::MatrixXd p_rho_in = p_raw;
@@ -95,16 +115,21 @@ private:
             kalman_->update(q_raw, p_raw);
         }
 
-        // Baselines
+        // --- Baselines ---
+        // 1. Numerical Differentiation (Backward Euler)
         Eigen::Vector3d v_numeric = (p_raw - last_pos_numeric_) / dt_;
         last_pos_numeric_ = p_raw;
 
-        double alpha = 1.0 / (1.0 + dirty_N_ * dt_);
-        double beta = dirty_N_ / (1.0 + dirty_N_ * dt_);
-        dirty_vel_ = alpha * dirty_vel_ + beta * (p_raw - last_pos_dirty_);
+        // 2. Dirty Derivative (Tustin)
+        // G(s) = s / (tau*s + 1) where tau = 1/N
+        double tau = 1.0 / dirty_N_;
+        double a1 = (2.0 * tau - dt_) / (2.0 * tau + dt_);
+        double a2 = 2.0 / (2.0 * tau + dt_);
+        
+        dirty_vel_ = a1 * dirty_vel_ + a2 * (p_raw - last_pos_dirty_);
         last_pos_dirty_ = p_raw;
 
-        // Transforms
+        // --- Transforms & Publishing ---
         static const Eigen::Quaterniond q_w2enu(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d::UnitX()));
         Eigen::Quaterniond q_enu = q_w2enu * q_raw;
         double roll, pitch, yaw;
@@ -114,11 +139,10 @@ private:
         auto publish_odom = [&](rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr& pub, 
                                 const Eigen::Vector3d& p_est, 
                                 const Eigen::Vector3d& v_est,
-                                const Eigen::Vector3d& w_est = Eigen::Vector3d::Zero(),
-                                const Eigen::Vector3d& v_aux = Eigen::Vector3d::Zero()) {
+                                const Eigen::Vector3d& w_est = Eigen::Vector3d::Zero()) {
             
             nav_msgs::msg::Odometry odom = odom_msg_template_;
-            odom.header.stamp = this->now();
+            odom.header.stamp = this->now(); 
 
             Eigen::Vector3d p_enu = q_w2enu * p_est;
             odom.pose.pose.position = tf2::toMsg(p_enu);
@@ -139,46 +163,50 @@ private:
                 odom.twist.twist.angular.z = w_body.z();
             }
 
-            if (v_aux.norm() > 1e-6) {
-                Eigen::Vector3d aux_body = q_yaw_inv * (q_w2enu * v_aux);
-                odom.twist.covariance[0] = aux_body.x();
-                odom.twist.covariance[7] = aux_body.y();
-                odom.twist.covariance[14] = aux_body.z();
-            }
-
             pub->publish(odom);
         };
 
         publish_odom(pub_levant_, levant_->getPosition(), levant_->getVelocity());
-        
-        Eigen::Vector3d rho_p = rho_->get_position_estimate();
-        Eigen::Vector3d rho_v = rho_->get_velocity_estimate();
-        publish_odom(pub_rho_, rho_p, rho_v);
+        publish_odom(pub_rho_, rho_->get_position_estimate(), rho_->get_velocity_estimate());
 
         if (kalman_->isReady()) {
             publish_odom(pub_kalman_, kalman_->position, kalman_->linear_vel, kalman_->angular_vel);
         }
 
-        publish_odom(pub_baseline_, p_raw, dirty_vel_, Eigen::Vector3d::Zero(), v_numeric);
+        publish_odom(pub_dirty_, p_raw, dirty_vel_);
+        publish_odom(pub_numeric_, p_raw, v_numeric);
     }
 
-    bool initialized_;
+    bool initialized_ = false;
+    bool has_data_ = false;
     double dt_;
     Eigen::Vector3d dirty_vel_, last_pos_dirty_, last_pos_numeric_;
     double dirty_N_;
     nav_msgs::msg::Odometry odom_msg_template_;
+    
+    // Thread safety
+    std::mutex data_mutex_;
+    geometry_msgs::msg::PoseStamped::SharedPtr latest_msg_;
 
     std::unique_ptr<mocap_filters::LevantFilter> levant_;
     std::unique_ptr<mocap_filters::KalmanFilter> kalman_;
     std::unique_ptr<mocap_filters::RhoFilter> rho_;
 
-    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pub_levant_, pub_rho_, pub_kalman_, pub_baseline_;
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pub_levant_, pub_rho_, pub_kalman_;
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pub_dirty_, pub_numeric_;
+    
     rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr sub_pose_;
+    rclcpp::TimerBase::SharedPtr timer_;
 };
 
 int main(int argc, char** argv) {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<MocapFiltersNode>());
+    // MultiThreadedExecutor is safer if we want the sub and timer to truly operate in parallel,
+    // though SingleThreaded works fine for this light load (callbacks queue up).
+    rclcpp::executors::SingleThreadedExecutor exec;
+    auto node = std::make_shared<MocapFiltersNode>();
+    exec.add_node(node);
+    exec.spin();
     rclcpp::shutdown();
     return 0;
 }
