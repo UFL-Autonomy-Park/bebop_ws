@@ -1,24 +1,26 @@
-/bebop104/mocap_filters:
+mocap_filters_node:
   ros__parameters:
-    frequency: 100.0
-    
     frames:
       parent: "world"
-      child: "bebop104/base_link"
-    
+      child: "drone_body"
     topics:
-      # Absolute path to mocap data
-      input_pose: "/vrpn_mocap/bebop104/pose"
+      input_pose: "/vrpn_client_node/drone/pose"
+    frequency: 100.0
 
     levant:
-      C: 2.0
-
-    kalman:
-      Q_pos: 0.000001
-      Q_vel: 0.5
+      C: 5.0
 
     rho:
-      k1: 20.0
-      k2: 20.0
-      k3: 6.0
       alpha: 0.25
+      k1: 1.5
+      k2: 1.5
+      k3: 1.0
+
+    kalman:
+      # Tuning: Low Q_vel to smooth ripples, Low Q_pos to trust model integration
+      # The R (Measurement Noise) is hardcoded low (1e-5) in cpp to trust MoCap position
+      Q_pos: 0.0001
+      Q_vel: 0.0001
+
+    baseline:
+      dirty_N: 20.0 # Cutoff frequency (rad/s)

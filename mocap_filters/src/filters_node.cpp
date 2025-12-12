@@ -17,23 +17,26 @@ public:
         // --- Parameters ---
         // Frames & Topics
         auto parent_frame = this->declare_parameter<std::string>("frames.parent", "world");
-        auto child_frame = this->declare_parameter<std::string>("frames.child", "base_link");
-        auto input_topic = this->declare_parameter<std::string>("topics.input_pose", "pose");
+        auto child_frame = this->declare_parameter<std::string>("frames.child", "body");
+        auto input_topic = this->declare_parameter<std::string>("topics.input_pose", "mocap_pose");
         double freq = this->declare_parameter<double>("frequency", 100.0);
         dt_ = 1.0 / freq;
 
         // Levant Params
-        double lev_C = this->declare_parameter<double>("levant.C", 2.0);
+        double lev_C = this->declare_parameter<double>("levant.C", 5.0);
         
         // Rho Params
-        double rho_k1 = this->declare_parameter<double>("rho.k1", 20.0);
-        double rho_k2 = this->declare_parameter<double>("rho.k2", 20.0);
-        double rho_k3 = this->declare_parameter<double>("rho.k3", 6.0);
+        double rho_k1 = this->declare_parameter<double>("rho.k1", 1.0);
+        double rho_k2 = this->declare_parameter<double>("rho.k2", 1.0);
+        double rho_k3 = this->declare_parameter<double>("rho.k3", 1.0);
         double rho_alpha = this->declare_parameter<double>("rho.alpha", 0.25);
 
-        // Kalman Params (Process Noise diagonals)
-        double kal_q_pos = this->declare_parameter<double>("kalman.Q_pos", 1e-6);
-        double kal_q_vel = this->declare_parameter<double>("kalman.Q_vel", 0.5);
+        // Kalman Params (Tuned for Position Trust/Velocity Smoothing)
+        double kal_q_pos = this->declare_parameter<double>("kalman.Q_pos", 0.001);
+        double kal_q_vel = this->declare_parameter<double>("kalman.Q_vel", 0.001);
+
+        // Dirty Derivative Params
+        dirty_N_ = this->declare_parameter<double>("baseline.dirty_N", 20.0);
 
         // --- Initialization ---
         // Levant
@@ -47,18 +50,23 @@ public:
         Eigen::Matrix<double, 12, 12> u_cov = Eigen::Matrix<double, 12, 12>::Zero();
         u_cov.topLeftCorner<6,6>() = Eigen::Matrix<double, 6, 6>::Identity() * kal_q_pos;
         u_cov.bottomRightCorner<6,6>() = Eigen::Matrix<double, 6, 6>::Identity() * kal_q_vel;
-        kalman_->init(u_cov, Eigen::Matrix<double, 6, 6>::Identity() * 1e-4, freq);
+        // R is hardcoded low (1e-5) in init call per request to trust measurement
+        kalman_->init(u_cov, Eigen::Matrix<double, 6, 6>::Identity() * 1e-5, freq);
+
+        // Baselines
+        dirty_vel_.setZero();
+        last_pos_numeric_.setZero();
+        last_pos_dirty_.setZero();
 
         // --- Communication ---
-        // Note: Output topics are hardcoded relative to the node namespace
         pub_levant_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/levant", 10);
         pub_rho_    = this->create_publisher<nav_msgs::msg::Odometry>("odom/rho", 10);
         pub_kalman_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/kalman", 10);
+        pub_baseline_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/baseline", 10);
 
         sub_pose_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
             input_topic, rclcpp::SensorDataQoS(),
             [this](geometry_msgs::msg::PoseStamped::SharedPtr msg) {
-                last_pose_ = *msg;
                 process(msg);
             });
 
@@ -77,6 +85,13 @@ private:
         tf2::fromMsg(msg->pose.position, p_raw);
         tf2::fromMsg(msg->pose.orientation, q_raw);
 
+        // Handle first run for baselines
+        if (!initialized_) {
+            last_pos_numeric_ = p_raw;
+            last_pos_dirty_ = p_raw;
+            initialized_ = true;
+        }
+
         // 2. Filter Propagation
         // Levant
         levant_->propagate(p_raw);
@@ -88,14 +103,25 @@ private:
         // Kalman
         if (!kalman_->isReady()) {
             kalman_->prepareInitialCondition(t, q_raw, p_raw);
-            return; // Kalman needs initialization time, skip publishing until ready
+            // Skip Kalman publish, but continue others
+        } else {
+            kalman_->prediction(t);
+            kalman_->update(q_raw, p_raw);
         }
-        kalman_->prediction(t);
-        kalman_->update(q_raw, p_raw);
 
-        // 3. Centralized Coordinate Transformation
+        // 3. Baseline Calculations (Dirty & Numeric)
+        // Numeric (Slope)
+        Eigen::Vector3d v_numeric = (p_raw - last_pos_numeric_) / dt_;
+        last_pos_numeric_ = p_raw;
+
+        // Dirty Derivative (Low Pass)
+        double alpha = 1.0 / (1.0 + dirty_N_ * dt_);
+        double beta = dirty_N_ / (1.0 + dirty_N_ * dt_);
+        dirty_vel_ = alpha * dirty_vel_ + beta * (p_raw - last_pos_dirty_);
+        last_pos_dirty_ = p_raw;
+
+        // 4. Centralized Coordinate Transformation
         // Transform: Mocap World (Y-up) -> ROS World (Z-up/ENU)
-        // Static rotation +90 deg about X
         static const Eigen::Quaterniond q_w2enu(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d::UnitX()));
         
         // Orientation
@@ -110,7 +136,8 @@ private:
         auto publish_odom = [&](rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr& pub, 
                                 const Eigen::Vector3d& p_est, 
                                 const Eigen::Vector3d& v_est,
-                                const Eigen::Vector3d& w_est = Eigen::Vector3d::Zero()) {
+                                const Eigen::Vector3d& w_est = Eigen::Vector3d::Zero(),
+                                const Eigen::Vector3d& v_aux = Eigen::Vector3d::Zero()) { // v_aux for hacking comparison
             
             nav_msgs::msg::Odometry odom = odom_msg_template_;
             odom.header.stamp = this->now();
@@ -118,7 +145,7 @@ private:
             // Position: Rotate Estimate to ENU
             Eigen::Vector3d p_enu = q_w2enu * p_est;
             odom.pose.pose.position = tf2::toMsg(p_enu);
-            odom.pose.pose.orientation = tf2::toMsg(q_enu); // Orientation comes from Mocap (common)
+            odom.pose.pose.orientation = tf2::toMsg(q_enu); 
 
             // Velocity: Rotate Estimate to ENU, then de-rotate Yaw to get Body Frame
             Eigen::Vector3d v_enu = q_w2enu * v_est;
@@ -128,7 +155,7 @@ private:
             odom.twist.twist.linear.y = v_body.y();
             odom.twist.twist.linear.z = v_body.z();
 
-            // Angular Velocity (Only Kalman provides this, others zero)
+            // Angular Velocity
             if (w_est.norm() > 1e-6) {
                 Eigen::Vector3d w_enu = q_w2enu * w_est;
                 Eigen::Vector3d w_body = q_yaw_inv * w_enu;
@@ -137,24 +164,43 @@ private:
                 odom.twist.twist.angular.z = w_body.z();
             }
 
+            // Hack: Store aux velocity in covariance for plotting comparison
+            if (v_aux.norm() > 1e-6) {
+                 // Rotate aux to body frame too for fair comparison
+                Eigen::Vector3d aux_body = q_yaw_inv * (q_w2enu * v_aux);
+                odom.twist.covariance[0] = aux_body.x();
+                odom.twist.covariance[7] = aux_body.y();
+                odom.twist.covariance[14] = aux_body.z();
+            }
+
             pub->publish(odom);
         };
 
-        // 4. Publish All
+        // 5. Publish All
         publish_odom(pub_levant_, levant_->getPosition(), levant_->getVelocity());
         
-        // Rho returns Matrix, cast to Vector
         Eigen::Vector3d rho_p = rho_->get_position_estimate();
         Eigen::Vector3d rho_v = rho_->get_velocity_estimate();
         publish_odom(pub_rho_, rho_p, rho_v);
 
-        publish_odom(pub_kalman_, kalman_->position, kalman_->linear_vel, kalman_->angular_vel);
+        if (kalman_->isReady()) {
+            publish_odom(pub_kalman_, kalman_->position, kalman_->linear_vel, kalman_->angular_vel);
+        }
+
+        // Publish Baseline: Main twist is Dirty Derivative, Covariance contains Numeric
+        publish_odom(pub_baseline_, p_raw, dirty_vel_, Eigen::Vector3d::Zero(), v_numeric);
     }
 
     // State
     bool initialized_;
     double dt_;
-    geometry_msgs::msg::PoseStamped last_pose_;
+    
+    // Baselines
+    Eigen::Vector3d dirty_vel_;
+    Eigen::Vector3d last_pos_dirty_;
+    Eigen::Vector3d last_pos_numeric_;
+    double dirty_N_;
+
     nav_msgs::msg::Odometry odom_msg_template_;
 
     // Filters
@@ -163,7 +209,7 @@ private:
     std::unique_ptr<mocap_filters::RhoFilter> rho_;
 
     // Pubs/Subs
-    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pub_levant_, pub_rho_, pub_kalman_;
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pub_levant_, pub_rho_, pub_kalman_, pub_baseline_;
     rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr sub_pose_;
 };
 
