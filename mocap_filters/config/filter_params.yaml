@@ -12,8 +12,8 @@ mocap_filters_node:
 
     rho:
       alpha: 0.25
-      k1: 20
-      k2: 20
+      k1: 20.0
+      k2: 20.0
       k3: 6.0
 
     kalman:
