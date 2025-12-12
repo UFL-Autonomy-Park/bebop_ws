@@ -152,23 +152,27 @@ private:
         // world -> body
         // y is up in world, z is up in body
         Eigen::Matrix3d R_world_to_enu; 
-        double theta = M_PI / 2.0;
+        double theta = M_PI / 2;
         double c = std::cos(theta);
         double s = std::sin(theta);
         R_world_to_enu << 1,  0,  0,
                           0,  c, -s,
                           0,  s,  c;
-        Eigen::Quaterniond q_world_to_enu(R_world_to_enu);
-        Eigen::Quaterniond q_att_enu = q_world_to_enu * current_att_;
         // Extract yaw
         double roll, pitch, yaw;
+        Eigen::Matrix3d R_att_world = current_att_.toRotationMatrix();
+        Eigen::Matrix3d R_att_enu =  R_att_world * R_world_to_enu;  
+        Eigen::Quaterniond q_att_enu(R_att_enu);
+
         tf2::Quaternion tf_q_enu(
             q_att_enu.x(), q_att_enu.y(), q_att_enu.z(), q_att_enu.w()
         );
         tf2::Matrix3x3(tf_q_enu).getRPY(roll, pitch, yaw);
 
+        RCLCPP_INFO(this->get_logger(), "The yaw in ENU frame is (deg) %.1f", yaw * 180.0 / M_PI);
+
         // Convert target vel to ENU
-        Eigen::Vector3d target_vel_enu = q_world_to_enu * Eigen::Vector3d(
+        Eigen::Vector3d target_vel_enu = q_att_enu * Eigen::Vector3d(
             target_vel_world_.linear.x,
             target_vel_world_.linear.y,
             target_vel_world_.linear.z
