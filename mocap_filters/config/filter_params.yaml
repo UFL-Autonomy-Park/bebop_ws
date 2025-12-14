@@ -8,13 +8,13 @@ mocap_filters_node:
     frequency: 100.0
 
     levant:
-      C: 5.0
+      C: 2.0
 
     rho:
-      k1: 20.0
-      k2: 20.0
+      k1: 10.0
+      k2: 10.0
       k3: 6.0
-      alpha: 0.25
+      alpha: 0.5
 
     kalman:
       Q_pos: 0.0001
