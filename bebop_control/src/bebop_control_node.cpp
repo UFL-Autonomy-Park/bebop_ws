@@ -33,6 +33,7 @@ public:
         // Load parameters
         max_tilt_rad_ = this->get_parameter("max_tilt_deg").as_double() * M_PI / 180.0;
         max_vert_speed_ = this->get_parameter("max_vert_speed").as_double();
+
         // Load gains
         kp_xy_ = this->get_parameter("kp_xy").as_double();
         ki_xy_ = this->get_parameter("ki_xy").as_double();

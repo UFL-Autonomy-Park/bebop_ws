@@ -2,6 +2,7 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
+import rclpy.logging
 
 import numpy as np
 from scipy.spatial.transform import Rotation
@@ -69,6 +70,7 @@ class TrajectoryTracking(Node):
         if self.bebop_mode != 1:
             return # Only run in offboard mode
         elif self.bebop_mode == 1:
+            self.get_logger().warning("Controller is running")
             # Compute desired trajectory (figure eight, constant altitude)
             self.trajectory_setpoint[0] = -0.5 * np.sin(2 * self.step)
             self.trajectory_setpoint[1] = self.vert_offset
