@@ -23,7 +23,7 @@ def generate_launch_description():
             name='mocap_filters_node',
             output='screen',
             parameters=[config_file_path],
-            namespace='/bebop104',
+            # namespace='/bebop104',
         ),
         Node(
             package='bebop_control',

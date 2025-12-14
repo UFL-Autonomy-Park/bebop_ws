@@ -38,7 +38,7 @@ install(TARGETS bebop_control_node
   DESTINATION lib/${PROJECT_NAME}
 )
 # Install launch files
-install(DIRECTORY launch
+install(DIRECTORY launch param
   DESTINATION share/${PROJECT_NAME}
 )
 

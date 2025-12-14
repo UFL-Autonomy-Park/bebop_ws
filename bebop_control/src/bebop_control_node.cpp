@@ -15,24 +15,20 @@ class BebopControlNode : public rclcpp::Node {
 public:
     BebopControlNode() : Node("bebop_control_node") {
         // bebop_autonomy parameters
-        // MAKE SURE THESE MATCH
-        this->declare_parameter("max_tilt_deg");
-        this->declare_parameter("max_vert_speed");
-        
+        this->declare_parameter<double>("max_tilt_deg");
+        this->declare_parameter<double>("max_vert_speed");
+
         // PID gains
-        this->declare_parameter("kp_xy"); 
-        this->declare_parameter("ki_xy"); 
-        this->declare_parameter("kd_xy"); 
-        this->declare_parameter("kp_z"); 
+        this->declare_parameter<double>("kp_xy"); 
+        this->declare_parameter<double>("ki_xy"); 
+        this->declare_parameter<double>("kd_xy"); 
+        this->declare_parameter<double>("kp_z"); 
 
         // Topics
-        this->declare_parameter("odom_topic");
-        this->declare_parameter("des_vel_topic");
-        this->declare_parameter("cmd_vel_topic");
-        this->declare_parameter("bebop_mode_topic");
-        // this->declare_parameter<std::string>("odom_topic");
-        // this->declare_parameter<std::string>("des_vel_topic");
-        // this->declare_parameter<std::string>("cmd_vel_topic");
+        this->declare_parameter<std::string>("odom_topic");
+        this->declare_parameter<std::string>("des_vel_topic");
+        this->declare_parameter<std::string>("cmd_vel_topic");
+        this->declare_parameter<std::string>("bebop_mode_topic");
         
         // Load parameters
         max_tilt_rad_ = this->get_parameter("max_tilt_deg").as_double() * M_PI / 180.0;

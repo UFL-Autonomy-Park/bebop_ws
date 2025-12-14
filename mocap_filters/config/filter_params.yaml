@@ -1,15 +1,24 @@
 /**:
   ros__parameters:
+    frames:
+      parent: "world"
+      child: "body_fixed"
+    topics:
+      input_pose: "/vrpn_mocap/bebop104/pose"
     frequency: 100.0
+
     levant:
       C: 2.0
+
     rho:
       k1: 10.0
       k2: 10.0
       k3: 6.0
       alpha: 0.5
+
     kalman:
       Q_pos: 0.0001
       Q_vel: 0.1
+
     baseline:
       dirty_N: 20.0

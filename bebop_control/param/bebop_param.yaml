@@ -1,8 +1,8 @@
-bebop_control_node:
+/**:
   ros__parameters:
     # Limits
-    max_tilt_deg: 5.0      
-    max_vert_speed: 1.0   
+    max_tilt_deg: 5.0
+    max_vert_speed: 1.0
 
     # Gains (Body Frame)
     kp_xy: 0.15 # ENU   
@@ -13,4 +13,5 @@ bebop_control_node:
     # Topics
     odom_topic: "/odom/rho"
     des_vel_topic: "/bebop104/cmd_vel_des"     
-    cmd_vel_topic: "/bebop104/cmd_vel"         
+    cmd_vel_topic: "/bebop104/cmd_vel"       
+    bebop_mode_topic: "/bebop104/mode"
