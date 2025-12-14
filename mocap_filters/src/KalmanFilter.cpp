@@ -99,4 +99,8 @@ void KalmanFilter::update(const Eigen::Quaterniond& q, const Eigen::Vector3d& p)
     state_cov = (Matrix12d::Identity() - K * meas_jacob) * state_cov;
 }
 
+bool isReady() const { 
+    return filter_status == READY;
+}
+
 } // namespace
