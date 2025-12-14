@@ -24,7 +24,7 @@ public:
     bool prepareInitialCondition(double curr_time, const Eigen::Quaterniond& q, const Eigen::Vector3d& p);
     void prediction(double curr_time);
     void update(const Eigen::Quaterniond& q, const Eigen::Vector3d& p);
-    bool isReady() const;
+    bool isReady() const { return filter_status == READY; }
 
     Eigen::Quaterniond attitude;
     Eigen::Vector3d position;

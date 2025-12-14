@@ -1,4 +1,4 @@
-mocap_filters_node:
+/**:
   ros__parameters:
     frames:
       parent: "world"
