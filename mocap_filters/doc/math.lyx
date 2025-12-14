@@ -1,0 +1,186 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $n\geq1$
+\end_inset
+
+.
+ Define 
+\begin_inset Formula $\xi\triangleq\left[\begin{array}{cccc}
+\hat{q}^{\top} & \hat{p}^{\top} & \mu^{\top} & \sigma^{\top}\end{array}\right]^{\top}\in\mathbb{R}^{4n\times1}$
+\end_inset
+
+, where 
+\begin_inset Formula $\widehat{q}\in\mathbb{R}^{n\times1}$
+\end_inset
+
+ is a position estimate, 
+\begin_inset Formula $\widehat{p}\in\mathbb{R}^{n\times1}$
+\end_inset
+
+ is a velocity estimate, 
+\begin_inset Formula $\mu\in\mathbb{R}^{n\times1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\sigma\in\mathbb{R}^{n}$
+\end_inset
+
+ are internal filter states.
+ The real position 
+\begin_inset Formula $q\in\mathbb{R}^{n\times1}$
+\end_inset
+
+ is known, but velocity 
+\begin_inset Formula $p\in\mathbb{R}^{n\times1}$
+\end_inset
+
+ is not.
+ For 
+\begin_inset Formula $m,p\in\mathbb{Z}_{\geq1}$
+\end_inset
+
+, and for any matrix, 
+\begin_inset Formula $A^{m\times p}$
+\end_inset
+
+, let 
+\begin_inset Formula $\text{sgn}:\mathbb{R}^{m\times p}\to\mathbb{R}^{m\times p}$
+\end_inset
+
+ be the element-wise signum function.
+ Gains are 
+\begin_inset Formula $k_{1},k_{2},k_{3},\alpha\in\mathbb{R}_{>0}$
+\end_inset
+
+.
+ Let 
+\begin_inset Formula $T\in\mathbb{R}_{>0}$
+\end_inset
+
+ be the sampling time.
+ The filter is
+\begin_inset Formula 
+\[
+\xi_{k+1}=A_{d}\xi_{k}+B_{q}q_{k}+\alpha B_{s}\text{sgn}\left(S\xi_{k}+q_{k}\right)
+\]
+
+\end_inset
+
+where
+\begin_inset Formula 
+\begin{align*}
+A_{d} & =e^{MT},\\
+B_{q} & =M^{-1}\left(A_{d}-I_{4n}\right)N\\
+B_{s} & =M^{-1}\left(A_{d}-I_{4n}\right)E
+\end{align*}
+
+\end_inset
+
+and
+\begin_inset Formula 
+\begin{align*}
+M & =\left[\begin{array}{cccc}
+\mathbf{0}_{n} & I_{n} & \mathbf{0}_{n} & \mathbf{0}_{n}\\
+-\left(3-k_{1}^{2}+\left(2k_{1}+k_{2}+k_{3}\right)\left(k_{1}+k_{2}\right)\right)I_{n} & \mathbf{0}_{n} & -\left(\left(2k_{1}+k_{2}+k_{3}\right)\left(k_{1}+k_{2}\right)+1\right)I_{n} & -\left(2k_{1}+k_{2}+k_{3}\right)I_{n}\\
+-\left(k_{1}+k_{2}\right)I_{n} & \mathbf{0}_{n} & -\left(2k_{1}+k_{2}\right)I_{n} & -I_{n}\\
+-\left(1+\left(k_{1}+k_{2}\right)\left(k_{3}-k_{1}\right)\right)I_{n} & \mathbf{0}_{n} & -\left(k_{1}+k_{2}\right)\left(k_{3}-k_{1}\right)I_{n} & -k_{3}I_{n}
+\end{array}\right]\in\mathbb{R}^{4n\times4n}\\
+N & =\left[\begin{array}{c}
+\mathbf{0}_{n}\\
+\left(3-k_{1}^{2}+\left(2k_{1}+k_{2}+k_{3}\right)\left(k_{1}+k_{2}\right)\right)I_{n}\\
+\left(k_{1}+k_{2}\right)I_{n}\\
+\left(1+\left(k_{1}+k_{2}\right)\left(k_{3}-k_{1}\right)\right)I_{n}
+\end{array}\right]\in\mathbb{R}^{4n\times n},\hspace{1em}E=\left[\begin{array}{c}
+\mathbf{0}_{n}\\
+I_{n}\\
+\mathbf{0}_{n}\\
+\mathbf{0}_{n}
+\end{array}\right]\in\mathbb{R}^{4n\times n},\\
+S & =\left[\begin{array}{cccc}
+-I_{n} & \mathbf{0}_{n} & -I_{n} & \mathbf{0}_{n}\end{array}\right]\in\mathbb{R}^{n\times4n}.
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
