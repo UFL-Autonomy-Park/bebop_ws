@@ -11,6 +11,6 @@ bebop_control_node:
     kp_z: 0.2 # ENU              
 
     # Topics
-    odom_topic: "/bebop104/filtered_odom"
+    odom_topic: "/odom/rho"
     des_vel_topic: "/bebop104/cmd_vel_des"     
     cmd_vel_topic: "/bebop104/cmd_vel"         

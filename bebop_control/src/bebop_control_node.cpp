@@ -16,20 +16,20 @@ public:
     BebopControlNode() : Node("bebop_control_node") {
         // bebop_autonomy parameters
         // MAKE SURE THESE MATCH
-        this->declare_parameter("max_tilt_deg", 5.0);
-        this->declare_parameter("max_vert_speed", 1.0);
+        this->declare_parameter("max_tilt_deg");
+        this->declare_parameter("max_vert_speed");
         
         // PID gains
-        this->declare_parameter("kp_xy", 0.1); 
-        this->declare_parameter("ki_xy", 0.0); 
-        this->declare_parameter("kd_xy", 0.00); 
-        this->declare_parameter("kp_z", 0.1); 
+        this->declare_parameter("kp_xy"); 
+        this->declare_parameter("ki_xy"); 
+        this->declare_parameter("kd_xy"); 
+        this->declare_parameter("kp_z"); 
 
         // Topics
-        this->declare_parameter("odom_topic", "/bebop104/filtered_odom");
-        this->declare_parameter("des_vel_topic", "/bebop104/cmd_vel_des");
-        this->declare_parameter("cmd_vel_topic", "/bebop104/cmd_vel");
-        this->declare_parameter("bebop_mode_topic", "/bebop104/mode");
+        this->declare_parameter("odom_topic");
+        this->declare_parameter("des_vel_topic");
+        this->declare_parameter("cmd_vel_topic");
+        this->declare_parameter("bebop_mode_topic");
         // this->declare_parameter<std::string>("odom_topic");
         // this->declare_parameter<std::string>("des_vel_topic");
         // this->declare_parameter<std::string>("cmd_vel_topic");
