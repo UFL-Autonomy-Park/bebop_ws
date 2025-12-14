@@ -18,7 +18,7 @@ public:
         auto parent_frame = this->declare_parameter<std::string>("frames.parent");
         auto child_frame = this->declare_parameter<std::string>("frames.child");
         auto input_topic = this->declare_parameter<std::string>("topics.input_pose");
-        double freq = this->declare_parameter<double>("frequency");
+        double freq = this->declare_parameter<double>("frequency"); // Hz
         dt_ = 1.0 / freq;
 
         // Levant Params
@@ -40,8 +40,8 @@ public:
         // --- Initialization ---
         levant_ = std::make_unique<mocap_filters::LevantFilter>(lev_C, dt_);
         rho_ = std::make_unique<mocap_filters::RhoFilter>(dt_, 3, rho_alpha, rho_k1, rho_k2, rho_k3);
-
         kalman_ = std::make_unique<mocap_filters::KalmanFilter>();
+
         Eigen::Matrix<double, 12, 12> u_cov = Eigen::Matrix<double, 12, 12>::Zero();
         u_cov.topLeftCorner<6,6>() = Eigen::Matrix<double, 6, 6>::Identity() * kal_q_pos;
         u_cov.bottomRightCorner<6,6>() = Eigen::Matrix<double, 6, 6>::Identity() * kal_q_vel;
@@ -84,9 +84,9 @@ private:
         {
             std::lock_guard<std::mutex> lock(data_mutex_);
             msg_copy = latest_msg_; 
-        } // mutex unlocks here
+        } 
 
-        double t = this->now().seconds(); // Use ROS time or msg stamp depending on requirement. Using wall time for filter consistency.
+        double t = this->now().seconds(); 
         
         Eigen::Vector3d p_raw;
         Eigen::Quaterniond q_raw;
@@ -98,11 +98,9 @@ private:
             last_pos_numeric_ = p_raw;
             last_pos_dirty_ = p_raw;
             initialized_ = true;
-            // For Kalman, we might want to wait, but this is fine for now
         }
 
         // --- Filters Propagate/Update ---
-        // These now run strictly at dt_ intervals using whatever p_raw is current
         levant_->propagate(p_raw);
         
         Eigen::MatrixXd p_rho_in = p_raw;
@@ -121,7 +119,6 @@ private:
         last_pos_numeric_ = p_raw;
 
         // 2. Dirty Derivative (Tustin)
-        // G(s) = s / (tau*s + 1) where tau = 1/N
         double tau = 1.0 / dirty_N_;
         double a1 = (2.0 * tau - dt_) / (2.0 * tau + dt_);
         double a2 = 2.0 / (2.0 * tau + dt_);
@@ -130,12 +127,14 @@ private:
         last_pos_dirty_ = p_raw;
 
         // --- Transforms & Publishing ---
+        // 1. Convert Raw (Y-up) -> ENU (Z-up)
         static const Eigen::Quaterniond q_w2enu(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d::UnitX()));
+        
+        // Full orientation in ENU frame
         Eigen::Quaterniond q_enu = q_w2enu * q_raw;
-        double roll, pitch, yaw;
-        tf2::Matrix3x3(tf2::Quaternion(q_enu.x(), q_enu.y(), q_enu.z(), q_enu.w())).getRPY(roll, pitch, yaw);
-        Eigen::Quaterniond q_yaw_inv(Eigen::AngleAxisd(-yaw, Eigen::Vector3d::UnitZ()));
+        q_enu.normalize();
 
+        // 2. Define the helper to publish
         auto publish_odom = [&](rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr& pub, 
                                 const Eigen::Vector3d& p_est, 
                                 const Eigen::Vector3d& v_est,
@@ -144,12 +143,14 @@ private:
             nav_msgs::msg::Odometry odom = odom_msg_template_;
             odom.header.stamp = this->now(); 
 
+            // Position: Local ENU Frame
             Eigen::Vector3d p_enu = q_w2enu * p_est;
             odom.pose.pose.position = tf2::toMsg(p_enu);
             odom.pose.pose.orientation = tf2::toMsg(q_enu); 
 
+            // Velocity: Rotate ENU -> Full Body Frame (This matches BebopControlNode logic)
             Eigen::Vector3d v_enu = q_w2enu * v_est;
-            Eigen::Vector3d v_body = q_yaw_inv * v_enu;
+            Eigen::Vector3d v_body = q_enu.inverse() * v_enu;
             
             odom.twist.twist.linear.x = v_body.x();
             odom.twist.twist.linear.y = v_body.y();
@@ -157,7 +158,7 @@ private:
 
             if (w_est.norm() > 1e-6) {
                 Eigen::Vector3d w_enu = q_w2enu * w_est;
-                Eigen::Vector3d w_body = q_yaw_inv * w_enu;
+                Eigen::Vector3d w_body = q_enu.inverse() * w_enu;
                 odom.twist.twist.angular.x = w_body.x();
                 odom.twist.twist.angular.y = w_body.y();
                 odom.twist.twist.angular.z = w_body.z();
