@@ -2,7 +2,6 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
-import rclpy.logging
 
 import numpy as np
 from scipy.spatial.transform import Rotation
@@ -44,15 +43,13 @@ class TrajectoryTracking(Node):
         self.get_logger().info('Figure eight trajectory tracking node has been initialized.')
 
         # Declare params
-        self.declare_parameter('vert_offset', 0.5) # meters
-        self.declare_parameter('update_rate', 50.0) # Hz
-        self.declare_parameter('tracking_kp', 1.0)
-        self.declare_parameter('heading_kp', 1.0)
+        self.declare_parameter('vert_offset', rclpy.Parameter.Type.DOUBLE) # meters
+        self.declare_parameter('update_rate', rclpy.Parameter.Type.DOUBLE) # Hz
+        self.declare_parameter('tracking_kp', rclpy.Parameter.Type.DOUBLE)
         # Get params
         self.vert_offset = self.get_parameter('vert_offset').get_parameter_value().double_value
         self.update_rate = self.get_parameter('update_rate').get_parameter_value().double_value
         self.tracking_kp = self.get_parameter('tracking_kp').get_parameter_value().double_value
-        self.heading_kp = self.get_parameter('heading_kp').get_parameter_value().double_value
 
         # Timer
         self.timer = self.create_timer(1.0/self.update_rate, self.timer_callback) 
@@ -70,7 +67,6 @@ class TrajectoryTracking(Node):
         if self.bebop_mode != 1:
             return # Only run in offboard mode
         elif self.bebop_mode == 1:
-            self.get_logger().warning("Controller is running")
             # Compute desired trajectory (figure eight, constant altitude)
             self.trajectory_setpoint[0] = -0.5 * np.sin(2 * self.step)
             self.trajectory_setpoint[1] = self.vert_offset
@@ -80,45 +76,27 @@ class TrajectoryTracking(Node):
             traj_deriv_z = 2.0 * np.cos(self.step)
             yaw_setpoint = np.arctan2(traj_deriv_z, traj_deriv_x)
             # Increment step
-            self.step += 1.0/self.update_rate 
+            self.step += 1.0/(self.update_rate * 10.0)
             
             # Get current yaw from pose
             q = self.bebop_pose.pose.orientation
             r_world = Rotation.from_quat([q.x, q.y, q.z, q.w])
             r_enu_correction = Rotation.from_euler('x', 90, degrees=True) # To ENU
-            r_enu = r_enu_correction * r_world
+            r_enu = r_world.inv() * r_enu_correction 
             current_roll, current_pitch, current_yaw = r_enu.as_euler('xyz', degrees=False)
-
-            # TEMP: Drive Bebop to fixed point
-            self.trajectory_setpoint[0] = 0.0
-            self.trajectory_setpoint[1] = self.vert_offset
-            self.trajectory_setpoint[2] = 1.0
 
             # Compute control input (P controller)
             err_x = self.trajectory_setpoint[0] - self.bebop_pose.pose.position.x
             err_y = self.trajectory_setpoint[1] - self.bebop_pose.pose.position.y
             err_z = self.trajectory_setpoint[2] - self.bebop_pose.pose.position.z
-            err_yaw = yaw_setpoint - current_yaw
+            err_yaw = -(yaw_setpoint - current_yaw)
             err_yaw = (err_yaw + np.pi) % (2 * np.pi) - np.pi # Wrap to [-pi, pi]
             self.control_input.linear.x = self.tracking_kp * err_x
             self.control_input.linear.y = self.tracking_kp * err_y
             self.control_input.linear.z = self.tracking_kp * err_z
-            # self.control_input.angular.y = self.heading_kp * err_yaw
-
-            # TEMP: Convert control input to body frame
-            # control_input_world = np.zeros(3)
-            # control_input_world[0] = self.tracking_kp * err_x
-            # control_input_world[1] = self.tracking_kp * err_y
-            # control_input_world[2] = self.tracking_kp * err_z
-            # control_input_enu = r_enu_correction.apply(control_input_world)
-            # r_yaw_correction = Rotation.from_euler('z', -current_yaw, degrees=False)
-            # control_input_body = r_yaw_correction.apply(control_input_enu)
-            # # clamp vals to [-1,1]
-            # control_input_body = np.clip(control_input_body, -1.0, 1.0)
-            # self.control_input.linear.x = control_input_body[0]
-            # self.control_input.linear.y = control_input_body[1]
-            # self.control_input.linear.z = control_input_body[2]
-        
+            self.control_input.angular.y = err_yaw
+            # log yaw error
+            # self.get_logger().info(f'Yaw error: {(err_yaw * 180 / np.pi):.3f} deg')
 
             # Publish control input
             self.control_pub_.publish(self.control_input)

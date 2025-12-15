@@ -22,7 +22,6 @@ public:
         this->declare_parameter<double>("kp_xy"); 
         this->declare_parameter<double>("ki_xy"); 
         this->declare_parameter<double>("kd_xy"); 
-        this->declare_parameter<double>("kp_z"); 
 
         // Topics
         this->declare_parameter<std::string>("odom_topic");
@@ -38,7 +37,6 @@ public:
         kp_xy_ = this->get_parameter("kp_xy").as_double();
         ki_xy_ = this->get_parameter("ki_xy").as_double();
         kd_xy_ = this->get_parameter("kd_xy").as_double();
-        kp_z_ = this->get_parameter("kp_z").as_double();
 
         // Subscribers
         // Odometry
@@ -81,12 +79,20 @@ private:
     double last_vel_body_x_ = 0.0;
     double last_vel_body_y_ = 0.0;
     double last_err_y_ = 0.0;
+    // Integrator Booleans
+    bool integrator_on_x_ = true;
+    bool integrator_on_y_ = true;
+    bool is_saturated_x_ = false;
+    bool is_saturated_y_ = false;
+    bool is_diff_sign_x_ = false;
+    bool is_diff_sign_y_ = false;
+    int sgn_error_x_, sgn_error_y_;
+    int sgn_u_pitch, sgn_u_roll;
 
     // Parameters
     double max_tilt_rad_;
     double max_vert_speed_;
     double kp_xy_, ki_xy_, kd_xy_;
-    double kp_z_;
     int bebop_mode_ = 0;
 
     void desVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg) {
@@ -113,11 +119,14 @@ private:
             msg->pose.pose.orientation.y,
             msg->pose.pose.orientation.z
         );
+
+        // RCLCPP_WARN(this->get_logger(), "Current body velocity: [x: %.2f, y: %.2f, z: %.2f]",
+        //     current_vel_body_.x(), current_vel_body_.y(), current_vel_body_.z());
     }
 
     void bebopModeCallback(const std_msgs::msg::Int32::SharedPtr msg) {
         bebop_mode_ = msg->data;
-    }   
+    }
 
     void controlLoop() {
         // Hover if no odom (either never received or stale)
@@ -152,33 +161,61 @@ private:
             target_vel_world_.linear.z
         );
 
+
+        RCLCPP_WARN(this->get_logger(), "Current body velocity: [x: %.2f, y: %.2f, z: %.2f]",
+            current_vel_body_.x(), current_vel_body_.y(), current_vel_body_.z());
+        
+
         // Calculate errors (body frame)
         double err_x = target_vel_body.x() - current_vel_body_.x();
         double err_y = target_vel_body.y() - current_vel_body_.y();
-        double err_z = target_vel_body.z() - current_vel_body_.z(); 
+        sgn_error_x_ = (err_x > 0) ? 1 : ((err_x < 0) ? -1 : 0);
+        sgn_error_y_ = (err_y > 0) ? 1 : ((err_y < 0) ? -1 : 0);
 
         // Integral
         double dt = 0.02; // 50 Hz
-        err_sum_x_ = std::clamp(err_sum_x_ + err_x * dt, -0.2,0.2);
-        err_sum_y_ = std::clamp(err_sum_y_ + err_y * dt, -0.2,0.2);
-
-        // Derivative
-        double d_vel_x = (current_vel_body_.x() - last_vel_body_x_) / dt;
-        double d_vel_y = (current_vel_body_.y() - last_vel_body_y_) / dt;
-        last_vel_body_x_ = current_vel_body_.x();
-        last_vel_body_y_ = current_vel_body_.y();
+        if (integrator_on_x_) {
+            err_sum_x_ = err_sum_x_ + err_x * dt;
+        }
+        
+        if (integrator_on_y_) {
+            err_sum_y_ = err_sum_y_ + err_y * dt;
+        }
+        
+        // // Derivative
+        // double d_vel_x = (current_vel_body_.x() - last_vel_body_x_) / dt;
+        // double d_vel_y = (current_vel_body_.y() - last_vel_body_y_) / dt;
+        // last_vel_body_x_ = current_vel_body_.x();
+        // last_vel_body_y_ = current_vel_body_.y();
 
         // PID output (desired tilt in rad)
-        double u_pitch = kp_xy_ * err_x + ki_xy_ * err_sum_x_ - kd_xy_ * d_vel_x;
-        double u_roll  = kp_xy_ * err_y + ki_xy_ * err_sum_y_ - kd_xy_ * d_vel_y;
-        double u_vert = kp_z_ * err_z;
+        // Normalized wrt max values
+        double u_pitch = (kp_xy_ * err_x + ki_xy_ * err_sum_x_); // - kd_xy_ * d_vel_x
+        double u_roll  = (kp_xy_ * err_y + ki_xy_ * err_sum_y_); // - kd_xy_ * d_vel_y
+        sgn_u_pitch = (u_pitch > 0) ? 1 : ((u_pitch < 0) ? -1 : 0);
+        sgn_u_roll = (u_roll > 0) ? 1 : ((u_roll < 0) ? -1 : 0);
 
+        // Anti-windup
+        bool sgn_in_matches_sgn_out_X = (sgn_error_x_ == sgn_u_pitch);
+        bool sgn_in_matches_sgn_out_Y = (sgn_error_y_ == sgn_u_roll);
+        double u_pitch_sat = std::clamp(u_pitch / max_tilt_rad_, -1.0, 1.0);
+        double u_roll_sat = std::clamp(u_roll / max_tilt_rad_, -1.0, 1.0);
+        is_saturated_x_ = (std::abs(u_pitch) >= max_tilt_rad_);
+        is_saturated_y_ = (std::abs(u_roll) >= max_tilt_rad_);
+        integrator_on_x_ = !(is_saturated_x_ && sgn_in_matches_sgn_out_X);
+        integrator_on_y_ = !(is_saturated_y_ && sgn_in_matches_sgn_out_Y);
+
+        // RCLCPP_WARN(this->get_logger(), "Integrator status (x, y): [%s, %s]. Integral terms (x, y): [%.2f, %.2f]",
+        //     integrator_on_x_ ? "ON" : "OFF", integrator_on_y_ ? "ON" : "OFF",
+        //     err_sum_x_, err_sum_y_);
+        
         // Output
         geometry_msgs::msg::Twist cmd_vel;
         // Normalize
-        cmd_vel.linear.x = std::clamp(u_pitch / max_tilt_rad_,-1.0,1.0);
-        cmd_vel.linear.y = std::clamp(u_roll / max_tilt_rad_,-1.0,1.0);
-        cmd_vel.linear.z = std::clamp(u_vert / max_vert_speed_,-1.0,1.0);
+        cmd_vel.linear.x = u_pitch_sat;
+        cmd_vel.linear.y = u_roll_sat;
+        // cmd_vel.linear.z = std::clamp(target_vel_world_.linear.y / max_vert_speed_,-1.0,1.0);
+        cmd_vel.linear.z = std::clamp(target_vel_body.z() / max_vert_speed_,-1.0,1.0);
         cmd_vel.angular.z = std::clamp(target_vel_world_.angular.y, -1.0,1.0); // Yaw rate command directly
         
         // Publish
@@ -186,7 +223,6 @@ private:
     }
 
     void stopDrone() {
-        // cmd_vel_pub_->publish(geometry_msgs::msg::Twist()); // Zero velocities
         // Reset integral terms
         err_sum_x_ = 0.0;
         err_sum_y_ = 0.0;
@@ -196,8 +232,6 @@ private:
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr des_vel_sub_;
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
     rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr bebop_mode_sub_;
-    // rclcpp::TimerBase::SharedPtr control_timer_;
-
 };
 
 int main(int argc, char * argv[]) {

@@ -146,7 +146,7 @@ private:
             // Position: Local ENU Frame
             Eigen::Vector3d p_enu = q_w2enu * p_est;
             odom.pose.pose.position = tf2::toMsg(p_enu);
-            odom.pose.pose.orientation = tf2::toMsg(q_enu); 
+            odom.pose.pose.orientation = tf2::toMsg(q_raw);
 
             // Velocity: Rotate ENU -> Full Body Frame (This matches BebopControlNode logic)
             Eigen::Vector3d v_enu = q_w2enu * v_est;

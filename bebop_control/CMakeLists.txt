@@ -37,9 +37,7 @@ ament_target_dependencies(bebop_control_node
 install(TARGETS bebop_control_node
   DESTINATION lib/${PROJECT_NAME}
 )
-# Install launch files
-install(DIRECTORY launch param
-  DESTINATION share/${PROJECT_NAME}
-)
+
+install(DIRECTORY param DESTINATION share/${PROJECT_NAME})
 
 ament_package()
