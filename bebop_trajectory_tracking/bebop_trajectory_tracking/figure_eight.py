@@ -68,15 +68,15 @@ class TrajectoryTracking(Node):
             return # Only run in offboard mode
         elif self.bebop_mode == 1:
             # Compute desired trajectory (figure eight, constant altitude)
-            self.trajectory_setpoint[0] = -0.5 * np.sin(2 * self.step)
+            self.trajectory_setpoint[0] = -1.0 * np.sin(2 * self.step)
             self.trajectory_setpoint[1] = self.vert_offset
-            self.trajectory_setpoint[2] = 2 * np.sin(self.step)
+            self.trajectory_setpoint[2] = 3 * np.sin(self.step)
             # Heading is tangent to trajectory
-            traj_deriv_x = -1.0 * np.cos(2 * self.step)
-            traj_deriv_z = 2.0 * np.cos(self.step)
+            traj_deriv_x = -2.0 * np.cos(2 * self.step)
+            traj_deriv_z = 3.0 * np.cos(self.step)
             yaw_setpoint = np.arctan2(traj_deriv_z, traj_deriv_x)
             # Increment step
-            self.step += 1.0/(self.update_rate * 10.0)
+            self.step += 1.0/(self.update_rate * 4.5)
             
             # Get current yaw from pose
             q = self.bebop_pose.pose.orientation
