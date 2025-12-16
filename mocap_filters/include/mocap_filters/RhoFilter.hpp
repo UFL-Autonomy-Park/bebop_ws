@@ -40,6 +40,6 @@ private:
     Eigen::MatrixXd sgn_term;
 };
 
-} // namespace mocap_filters
+}
 
 #endif

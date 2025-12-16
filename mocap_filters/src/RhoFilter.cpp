@@ -88,4 +88,4 @@ const Eigen::MatrixXd& RhoFilter::get_position_estimate() const
     return next_position_estimate;
 }
 
-} // namespace mocap_filters
+}
