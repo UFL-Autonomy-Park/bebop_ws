@@ -19,6 +19,8 @@ add_library(filter_libs
   src/LevantFilter.cpp
   src/RhoFilter.cpp
   src/rushi_RhoFilter.cpp
+  src/NumericalDifferentiation.cpp
+  src/DirtyDerivative.cpp
 )
 
 # Allow the library to find headers in 'include'
