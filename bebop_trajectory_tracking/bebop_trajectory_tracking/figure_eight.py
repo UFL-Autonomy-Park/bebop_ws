@@ -6,6 +6,7 @@ from rclpy.qos import qos_profile_sensor_data
 import numpy as np
 from scipy.spatial.transform import Rotation
 from geometry_msgs.msg import PoseStamped, Twist
+from visualization_msgs.msg import Marker
 from std_msgs.msg import Int32 
 
 class TrajectoryTracking(Node):
@@ -41,6 +42,11 @@ class TrajectoryTracking(Node):
         self.error_pub_ = self.create_publisher(
             Twist,
             '/bebop104/tracking_error',
+            10
+        )
+        self.bebop_sphere_pub_ = self.create_publisher(
+            Marker,
+            '/bebop104/marker',
             10
         )     
         
@@ -126,6 +132,22 @@ class TrajectoryTracking(Node):
             err_msg.linear.z = err_z
             err_msg.angular.y = err_yaw
             self.error_pub_.publish(err_msg)
+            # Publish Bebop marker
+            bebop_marker = Marker()
+            bebop_marker.header.frame_id = self.bebop_pose.header.frame_id
+            bebop_marker.type = Marker.SPHERE
+            bebop_marker.action = Marker.ADD
+            bebop_marker.pose.position.x = self.bebop_pose.pose.position.x
+            bebop_marker.pose.position.y = self.bebop_pose.pose.position.y
+            bebop_marker.pose.position.z = self.bebop_pose.pose.position.z
+            bebop_marker.scale.x = 0.1
+            bebop_marker.scale.y = 0.1
+            bebop_marker.scale.z = 0.1
+            bebop_marker.color.r = 0.0
+            bebop_marker.color.g = 1.0
+            bebop_marker.color.b = 0.0
+            bebop_marker.color.a = 1.0
+            self.bebop_sphere_pub_(bebop_marker)
 
         else:
             self.get_logger().warn('Bebop mode is not recognized. Shutting down node')
