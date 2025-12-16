@@ -18,7 +18,7 @@ public:
     rushi_RhoFilter(const rushi_RhoFilter&) = delete;
     rushi_RhoFilter& operator=(const rushi_RhoFilter&) = delete;
 
-    void propagate_filter(const Eigen::MatrixXd& current_position);
+    void propagate_filter(const Eigen::VectorXd& current_position);
     const Eigen::MatrixXd& get_velocity_estimate() const;
     const Eigen::MatrixXd& get_position_estimate() const;
 

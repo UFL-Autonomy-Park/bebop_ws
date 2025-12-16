@@ -6,7 +6,6 @@
 #include "tf2/LinearMath/Matrix3x3.h"
 
 #include "mocap_filters/LevantFilter.hpp"
-#include "mocap_filters/KalmanFilter.hpp"
 #include "mocap_filters/RhoFilter.hpp"
 #include "mocap_filters/rushi_RhoFilter.hpp"
 
@@ -36,10 +35,6 @@ public:
         double rushi_rho_beta = this->declare_parameter<double>("rushi_rho.beta");
         double rushi_rho_k = this->declare_parameter<double>("rushi_rho.k");
 
-        // Kalman Params
-        double kal_q_pos = this->declare_parameter<double>("kalman.Q_pos");
-        double kal_q_vel = this->declare_parameter<double>("kalman.Q_vel");
-
         // Baseline Params
         dirty_N_ = this->declare_parameter<double>("baseline.dirty_N");
 
@@ -52,17 +47,10 @@ public:
         last_pos_numeric_.setZero();
         last_pos_dirty_.setZero();
 
-        kalman_ = std::make_unique<mocap_filters::KalmanFilter>(); 
-        Eigen::Matrix<double, 12, 12> u_cov = Eigen::Matrix<double, 12, 12>::Zero();
-        u_cov.topLeftCorner<6,6>() = Eigen::Matrix<double, 6, 6>::Identity() * kal_q_pos;
-        u_cov.bottomRightCorner<6,6>() = Eigen::Matrix<double, 6, 6>::Identity() * kal_q_vel;
-        kalman_->init(u_cov, Eigen::Matrix<double, 6, 6>::Identity() * 1e-5, freq);
-
-        pub_levant_  = this->create_publisher<nav_msgs::msg::Odometry>("odom/levant", 10);
-        pub_rho_     = this->create_publisher<nav_msgs::msg::Odometry>("odom/rho", 10);
-        pub_kalman_  = this->create_publisher<nav_msgs::msg::Odometry>("odom/kalman", 10);
-        pub_dirty_   = this->create_publisher<nav_msgs::msg::Odometry>("odom/dirty", 10);
-        pub_numeric_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/numeric", 10);
+        pub_levant_    = this->create_publisher<nav_msgs::msg::Odometry>("odom/levant", 10);
+        pub_rho_       = this->create_publisher<nav_msgs::msg::Odometry>("odom/rho", 10);
+        pub_dirty_     = this->create_publisher<nav_msgs::msg::Odometry>("odom/dirty", 10);
+        pub_numeric_   = this->create_publisher<nav_msgs::msg::Odometry>("odom/numeric", 10);
         pub_rushi_rho_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/rushi_rho", 10);
 
         sub_pose_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
@@ -91,8 +79,6 @@ private:
             msg_copy = latest_msg_; 
         } 
 
-        double t = this->now().seconds(); 
-        
         Eigen::Vector3d p_raw;
         Eigen::Quaterniond q_raw;
         tf2::fromMsg(msg_copy->pose.position, p_raw);
@@ -107,16 +93,8 @@ private:
 
         // --- Filters Propagate/Update ---
         levant_->propagate(p_raw);
-        Eigen::MatrixXd p_rho_in = p_raw;
-        rho_->propagate_filter(p_rho_in);
-        rushi_rho_->propagate_filter(p_rho_in);
-
-        if (!kalman_->isReady()) {
-            kalman_->prepareInitialCondition(t, q_raw, p_raw);
-        } else {
-            kalman_->prediction(t);
-            kalman_->update(q_raw, p_raw);
-        }
+        rho_->propagate_filter(p_raw);
+        rushi_rho_->propagate_filter(p_raw);
 
         // --- Baselines ---
         // 1. Numerical Differentiation (Backward Euler)
@@ -151,9 +129,12 @@ private:
             // Position: Local ENU Frame
             Eigen::Vector3d p_enu = q_w2enu * p_est;
             odom.pose.pose.position = tf2::toMsg(p_enu);
-            odom.pose.pose.orientation = tf2::toMsg(q_raw);
+            odom.pose.pose.orientation = tf2::toMsg(q_raw); // Keep orientation raw or ENU? Usually ENU. 
+            // Note: Your original code passed q_raw here. If you want ENU orientation:
+            // odom.pose.pose.orientation = tf2::toMsg(q_enu);
+            // I kept your original logic (q_raw) to minimize logic changes.
 
-            // Velocity: Rotate ENU -> Full Body Frame (This matches BebopControlNode logic)
+            // Velocity: Rotate ENU -> Full Body Frame
             Eigen::Vector3d v_enu = q_w2enu * v_est;
             Eigen::Vector3d v_body = q_enu.inverse() * v_enu;
             
@@ -176,10 +157,6 @@ private:
         publish_odom(pub_rho_, rho_->get_position_estimate(), rho_->get_velocity_estimate());
         publish_odom(pub_rushi_rho_, rushi_rho_->get_position_estimate(), rushi_rho_->get_velocity_estimate());
 
-        if (kalman_->isReady()) {
-            publish_odom(pub_kalman_, kalman_->position, kalman_->linear_vel, kalman_->angular_vel);
-        }
-
         publish_odom(pub_dirty_, p_raw, dirty_vel_);
         publish_odom(pub_numeric_, p_raw, v_numeric);
     }
@@ -196,11 +173,10 @@ private:
     geometry_msgs::msg::PoseStamped::SharedPtr latest_msg_;
 
     std::unique_ptr<mocap_filters::LevantFilter> levant_;
-    std::unique_ptr<mocap_filters::KalmanFilter> kalman_;
     std::unique_ptr<mocap_filters::RhoFilter> rho_;
     std::unique_ptr<mocap_filters::rushi_RhoFilter> rushi_rho_;
 
-    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pub_levant_, pub_rho_, pub_kalman_, pub_rushi_rho_;
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pub_levant_, pub_rho_, pub_rushi_rho_;
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pub_dirty_, pub_numeric_;
     
     rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr sub_pose_;
@@ -209,8 +185,6 @@ private:
 
 int main(int argc, char** argv) {
     rclcpp::init(argc, argv);
-    // MultiThreadedExecutor is safer if we want the sub and timer to truly operate in parallel,
-    // though SingleThreaded works fine for this light load (callbacks queue up).
     rclcpp::executors::SingleThreadedExecutor exec;
     auto node = std::make_shared<MocapFiltersNode>();
     exec.add_node(node);

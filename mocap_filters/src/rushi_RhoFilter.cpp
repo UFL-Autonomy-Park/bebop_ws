@@ -49,7 +49,7 @@ rushi_RhoFilter::rushi_RhoFilter(
     next_velocity_estimate = next_zeta.block(state_space_dim, 0, state_space_dim, 1);
 }
 
-void rushi_RhoFilter::propagate_filter(const Eigen::MatrixXd& current_position) 
+void rushi_RhoFilter::propagate_filter(const Eigen::VectorXd& current_position) 
 {
     next_zeta.noalias() = A_d * zeta;
     next_zeta.noalias() += B_d * current_position;
