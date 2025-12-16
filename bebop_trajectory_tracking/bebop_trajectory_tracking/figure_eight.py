@@ -37,6 +37,11 @@ class TrajectoryTracking(Node):
             PoseStamped,
             '/bebop104/trajectory_setpoint',
             10
+        )
+        self.error_pub_ = self.create_publisher(
+            Twist,
+            '/bebop104/tracking_error',
+            10
         )     
         
         # Log
@@ -114,6 +119,14 @@ class TrajectoryTracking(Node):
             traj_msg.pose.orientation.z = qz
             traj_msg.pose.orientation.w = qw
             self.trajectory_pub_.publish(traj_msg)
+            # Publish tracking error
+            err_msg = Twist()
+            err_msg.linear.x = err_x
+            err_msg.linear.y = err_y
+            err_msg.linear.z = err_z
+            err_msg.angular.y = err_yaw
+            self.error_pub_.publish(err_msg)
+
         else:
             self.get_logger().warn('Bebop mode is not recognized. Shutting down node')
             # Kill node

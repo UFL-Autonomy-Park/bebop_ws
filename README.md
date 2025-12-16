@@ -34,9 +34,9 @@ sudo apt install ros-humble-camera-info-manager libavdevice-dev
 git config --global color.ui auto 
 ```
 
-First, build `ros2_bebop_arsdk`,
+First, build `ros2_parrot_arsdk`,
 ```
-colcon build --packages-select ros2_bebop_arsdk
+colcon build --packages-select ros2_parrot_arsdk
 ```
 
 and then build `ros2_bebop_driver`.
