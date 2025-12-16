@@ -7,7 +7,10 @@
     # Gains (Body Frame)
     kp_xy: 0.15 # ENU
     ki_xy: 0.006 # ENU
-    kd_xy: 0.0 # ENU
+    kd_xy: 0.002 # ENU
+
+    update_rate: 50.0  # Control loop frequency in Hz
+    cutoff_frequency: 8.0 # Dirty derivative cutoff frequency in Hz
 
     # Topics
     odom_topic: "/bebop104/filtered_odom/rho"

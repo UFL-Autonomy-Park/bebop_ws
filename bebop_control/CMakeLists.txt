@@ -16,13 +16,12 @@ find_package(tf2_geometry_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 # Create node executable
-add_executable(bebop_control_node src/bebop_control_node.cpp)
+add_executable(bebop_control_node src/bebop_control_node.cpp src/DirtyDerivative.cpp)
 
 target_include_directories(bebop_control_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 target_link_libraries(bebop_control_node Eigen3::Eigen)
-
 ament_target_dependencies(bebop_control_node
   rclcpp
   geometry_msgs
