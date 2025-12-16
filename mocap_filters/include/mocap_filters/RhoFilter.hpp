@@ -19,7 +19,7 @@ public:
     RhoFilter(const RhoFilter&) = delete;
     RhoFilter& operator=(const RhoFilter&) = delete;
 
-    void propagate_filter(const Eigen::MatrixXd& current_position);
+    void propagate_filter(const Eigen::VectorXd& current_position);
     
     const Eigen::MatrixXd& get_velocity_estimate() const;
     const Eigen::MatrixXd& get_position_estimate() const;
@@ -40,6 +40,6 @@ private:
     Eigen::MatrixXd sgn_term;
 };
 
-} // namespace mocap_filters
+}
 
 #endif

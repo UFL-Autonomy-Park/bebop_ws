@@ -6,7 +6,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     config_file_path = os.path.join(
         get_package_share_directory('mocap_filters'),
-        'config',
+        'param',
         'filter_params.yaml'
     )
 
@@ -17,7 +17,5 @@ def generate_launch_description():
             name='mocap_filters_node',
             output='screen',
             parameters=[config_file_path],
-            # Pass namespace if required by your setup, otherwise defaults to root
-            # namespace='/bebop104' 
         )
     ])

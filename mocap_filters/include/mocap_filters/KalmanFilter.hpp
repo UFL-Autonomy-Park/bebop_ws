@@ -43,6 +43,6 @@ private:
     Matrix6_12d meas_jacob;
 };
 
-} // namespace mocap_filters
+}
 
 #endif

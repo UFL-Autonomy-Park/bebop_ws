@@ -64,7 +64,7 @@ RhoFilter::RhoFilter(
     next_velocity_estimate = next_zeta.block(state_space_dim, 0, state_space_dim, 1);
 }
 
-void RhoFilter::propagate_filter(const Eigen::MatrixXd& current_position) 
+void RhoFilter::propagate_filter(const Eigen::VectorXd& current_position) 
 {
     sgn_term.noalias() = S * zeta;
     sgn_term += current_position;
@@ -88,4 +88,4 @@ const Eigen::MatrixXd& RhoFilter::get_position_estimate() const
     return next_position_estimate;
 }
 
-} // namespace mocap_filters
+}
