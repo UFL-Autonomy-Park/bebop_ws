@@ -103,7 +103,7 @@ private:
                                   const Eigen::Quaterniond& q_raw_mocap_frame) 
     {
         nav_msgs::msg::Odometry odom = odom_msg_template_;
-        odom.header.stamp = this->now(); 
+        odom.header.stamp = this->now();
 
         odom.pose.pose.position = tf2::toMsg(p_estimated_mocap_frame);
         odom.pose.pose.orientation = tf2::toMsg(q_raw_mocap_frame); 
