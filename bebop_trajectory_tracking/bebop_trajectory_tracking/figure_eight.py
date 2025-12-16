@@ -50,11 +50,13 @@ class TrajectoryTracking(Node):
         # Declare params
         self.declare_parameter('vert_offset', rclpy.Parameter.Type.DOUBLE) # meters
         self.declare_parameter('update_rate', rclpy.Parameter.Type.DOUBLE) # Hz
-        self.declare_parameter('tracking_kp', rclpy.Parameter.Type.DOUBLE)
+        self.declare_parameter('tracking_kp_lat', rclpy.Parameter.Type.DOUBLE)
+        self.declare_parameter('tracking_kp_vert', rclpy.Parameter.Type.DOUBLE)
         # Get params
         self.vert_offset = self.get_parameter('vert_offset').get_parameter_value().double_value
         self.update_rate = self.get_parameter('update_rate').get_parameter_value().double_value
-        self.tracking_kp = self.get_parameter('tracking_kp').get_parameter_value().double_value
+        self.tracking_kp_lat = self.get_parameter('tracking_kp_lat').get_parameter_value().double_value
+        self.tracking_kp_vert = self.get_parameter('tracking_kp_vert').get_parameter_value().double_value
 
         # Timer
         self.timer = self.create_timer(1.0/self.update_rate, self.timer_callback) 
@@ -96,12 +98,10 @@ class TrajectoryTracking(Node):
             err_z = self.trajectory_setpoint[2] - self.bebop_pose.pose.position.z
             err_yaw = -(yaw_setpoint - current_yaw)
             err_yaw = (err_yaw + np.pi) % (2 * np.pi) - np.pi # Wrap to [-pi, pi]
-            self.control_input.linear.x = self.tracking_kp * err_x
-            self.control_input.linear.y = self.tracking_kp * err_y
-            self.control_input.linear.z = self.tracking_kp * err_z
+            self.control_input.linear.x = self.tracking_kp_lat * err_x
+            self.control_input.linear.y = self.tracking_kp_vert * err_y
+            self.control_input.linear.z = self.tracking_kp_lat * err_z
             self.control_input.angular.y = err_yaw
-            # log yaw error
-            # self.get_logger().info(f'Yaw error: {(err_yaw * 180 / np.pi):.3f} deg')
 
             # Publish control input
             self.control_pub_.publish(self.control_input)

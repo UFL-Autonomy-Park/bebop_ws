@@ -2,4 +2,5 @@
   ros__parameters:
     vert_offset: 1.0 # m
     update_rate: 50.0 # Hz
-    tracking_kp: 0.75
+    tracking_kp_lat: 0.75 # for planar motion
+    tracking_kp_vert: 1.0 # for up/down motion
