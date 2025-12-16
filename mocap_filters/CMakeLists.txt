@@ -61,7 +61,7 @@ install(TARGETS filters_node filter_libs
 )
 
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
-install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY param DESTINATION share/${PROJECT_NAME})
 # Standard header install location
 install(DIRECTORY include/ DESTINATION include/)
 

@@ -37,12 +37,11 @@ public:
         numeric_ = std::make_unique<mocap_filters::NumericalDifferentiation>(dt);
         dirty_ = std::make_unique<mocap_filters::DirtyDerivative>(dirty_N, dt);
 
-        pub_levant_    = this->create_publisher<nav_msgs::msg::Odometry>("odom/levant", 10);
-        pub_rho_       = this->create_publisher<nav_msgs::msg::Odometry>("odom/rho", 10);
-        pub_dirty_     = this->create_publisher<nav_msgs::msg::Odometry>("odom/dirty", 10);
-        pub_numeric_   = this->create_publisher<nav_msgs::msg::Odometry>("odom/numeric", 10);
-        pub_rushi_rho_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/rushi_rho", 10);
-
+        pub_levant_    = this->create_publisher<nav_msgs::msg::Odometry>("/bebop104/filtered_odom/levant", 10);
+        pub_rho_       = this->create_publisher<nav_msgs::msg::Odometry>("/bebop104/filtered_odom/rho", 10);
+        pub_dirty_     = this->create_publisher<nav_msgs::msg::Odometry>("/bebop104/filtered_odom/dirty", 10);
+        pub_numeric_   = this->create_publisher<nav_msgs::msg::Odometry>("/bebop104/filtered_odom/numeric", 10);
+        pub_rushi_rho_ = this->create_publisher<nav_msgs::msg::Odometry>("/bebop104/filtered_odom/rushi_rho", 10);
         sub_pose_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
             input_topic, rclcpp::SensorDataQoS(),
             [this](geometry_msgs::msg::PoseStamped::SharedPtr msg) {
@@ -98,27 +97,27 @@ private:
     }
 
     void publish_odometry_message(rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr& pub, 
-                                  const Eigen::Vector3d& p_estimated_mocap, 
-                                  const Eigen::Vector3d& v_estimated_mocap,
-                                  const Eigen::Vector3d& w_estimated_mocap,
-                                  const Eigen::Quaterniond& q_att_mocap) 
+                                  const Eigen::Vector3d& p_estimated_mocap_frame, 
+                                  const Eigen::Vector3d& v_estimated_mocap_frame,
+                                  const Eigen::Vector3d& w_estimated_mocap_frame,
+                                  const Eigen::Quaterniond& q_raw_mocap_frame) 
     {
         nav_msgs::msg::Odometry odom = odom_msg_template_;
         odom.header.stamp = this->now(); 
 
-        odom.pose.pose.position = tf2::toMsg(p_estimated_mocap);
-        odom.pose.pose.orientation = tf2::toMsg(q_att_mocap); 
+        odom.pose.pose.position = tf2::toMsg(p_estimated_mocap_frame);
+        odom.pose.pose.orientation = tf2::toMsg(q_raw_mocap_frame); 
 
         // Transform mocap frame velocities to body frame
-        Eigen::Vector3d v_estimated_body = q_att_mocap.inverse() * v_estimated_mocap;
+        Eigen::Vector3d v_estimated_body = q_raw_mocap_frame.inverse() * v_estimated_mocap_frame;
         
         odom.twist.twist.linear.x = v_estimated_body.x();
         odom.twist.twist.linear.y = v_estimated_body.y();
         odom.twist.twist.linear.z = v_estimated_body.z();
 
-        odom.twist.twist.angular.x = w_estimated_mocap.x();
-        odom.twist.twist.angular.y = w_estimated_mocap.y();
-        odom.twist.twist.angular.z = w_estimated_mocap.z();
+        odom.twist.twist.angular.x = w_estimated_mocap_frame.x();
+        odom.twist.twist.angular.y = w_estimated_mocap_frame.y();
+        odom.twist.twist.angular.z = w_estimated_mocap_frame.z();
 
         pub->publish(odom);
     }
