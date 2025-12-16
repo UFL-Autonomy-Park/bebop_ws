@@ -47,5 +47,5 @@ colcon build --packages-select ros2_bebop_driver
 
 Lastly, build the rest of the packages
 ```
-colcon build --packages-select vrpn_mocap bebop_client bebop_control bebop_server bebop_teleop bebop_trajectory_tracking mocap_filters
+colcon build --packages-select vrpn_mocap bebop_client bebop_control bebop_server bebop_teleop bebop_trajectory_tracking mocap_filters ncr_lab_viz
 ```
