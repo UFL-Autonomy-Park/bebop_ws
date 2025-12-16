@@ -126,9 +126,16 @@ private:
 int main(int argc, char** argv) {
     rclcpp::init(argc, argv);
     rclcpp::executors::SingleThreadedExecutor exec;
-    auto node = std::make_shared<MocapFiltersNode>();
-    exec.add_node(node);
-    exec.spin();
+    
+    try {
+        auto node = std::make_shared<MocapFiltersNode>();
+        exec.add_node(node);
+        exec.spin();
+    } catch (const std::exception &e) {
+        // This will print "Parameter 'frames.parent' not set" instead of just crashing!
+        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Node exception: %s", e.what());
+    }
+
     rclcpp::shutdown();
     return 0;
 }
