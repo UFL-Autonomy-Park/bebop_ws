@@ -11,7 +11,7 @@ LevantFilter::LevantFilter(double C, double dt) : dt_(dt) {
     rho_dot_.setZero();
 }
 
-void LevantFilter::propagate(const Eigen::Vector3d& x_meas) {
+void LevantFilter::propagate_filter(const Eigen::Vector3d& x_meas) {
     Eigen::Vector3d x_tilde = x_meas - x_hat_;
 
     for (int i = 0; i < 3; ++i) {

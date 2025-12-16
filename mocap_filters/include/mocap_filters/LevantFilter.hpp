@@ -9,12 +9,10 @@ class LevantFilter {
 public:
     LevantFilter(double C, double dt);
 
-    void propagate(const Eigen::Vector3d& x_meas);
+    void propagate_filter(const Eigen::Vector3d& x_meas);
 
     Eigen::Vector3d get_position_estimate() const;
     Eigen::Vector3d get_velocity_estimate() const;
-    Eigen::Vector3d getPosition() const { return get_position_estimate(); }
-    Eigen::Vector3d getVelocity() const { return get_velocity_estimate(); }
 
 private:
     double dt_;
