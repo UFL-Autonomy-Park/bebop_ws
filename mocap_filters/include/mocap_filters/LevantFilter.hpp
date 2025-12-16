@@ -24,12 +24,12 @@ public:
             double abs_x_tilde = std::abs(x_tilde(i));
             rho_(i) += abs_x_tilde * sgn_x_tilde * dt_;
             rho_dot_(i) = rho_(i) + lambda_ * std::sqrt(abs_x_tilde) * sgn_x_tilde;
-            x_hat_(i) += rho_dot_(i) * dt_;
+            x_hat_(i) += rho_dot_(i) * dt_; // Euler solver because we have no choice
         }
     }
 
-    Eigen::Vector3d getPosition() const { return x_hat_; }
-    Eigen::Vector3d getVelocity() const { return rho_dot_; }
+    Eigen::Vector3d get_position_estimate() const { return x_hat_; }
+    Eigen::Vector3d get_velocity_estimate() const { return rho_dot_; }
 
 private:
     double dt_, alpha_, lambda_;

@@ -1,7 +1,9 @@
-#include "rushi_RhoFilter/rushi_RhoFilter.hpp"
+#include "mocap_filters/rushi_RhoFilter.hpp"
 #include <unsupported/Eigen/MatrixFunctions>
 #include <unsupported/Eigen/KroneckerProduct>
 #include <cmath>
+
+namespace mocap_filters {
 
 rushi_RhoFilter::rushi_RhoFilter(
     double sampling_time,
@@ -47,10 +49,10 @@ rushi_RhoFilter::rushi_RhoFilter(
     next_velocity_estimate = next_zeta.block(state_space_dim, 0, state_space_dim, 1);
 }
 
-void rushi_RhoFilter::propagate_filter(const Eigen::MatrixXd& current_state) 
+void rushi_RhoFilter::propagate_filter(const Eigen::MatrixXd& current_position) 
 {
     next_zeta.noalias() = A_d * zeta;
-    next_zeta.noalias() += B_d * current_state;
+    next_zeta.noalias() += B_d * current_position;
     
     zeta = next_zeta;
     next_position_estimate = zeta.block(0, 0, state_space_dim, 1); 
@@ -66,3 +68,5 @@ const Eigen::MatrixXd& rushi_RhoFilter::get_position_estimate() const
 {
     return next_position_estimate;
 }
+
+} // namespace

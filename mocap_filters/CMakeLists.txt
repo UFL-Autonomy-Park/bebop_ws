@@ -19,6 +19,7 @@ add_library(filter_libs
   src/LevantFilter.cpp
   src/RhoFilter.cpp
   src/KalmanFilter.cpp
+  src/rushi_RhoFilter.cpp
 )
 target_link_libraries(filter_libs Eigen3::Eigen)
 
@@ -28,7 +29,7 @@ ament_target_dependencies(filters_node
   rclcpp 
   geometry_msgs 
   nav_msgs 
-  tf2 
+  tf2
   tf2_eigen 
   Eigen3
 )

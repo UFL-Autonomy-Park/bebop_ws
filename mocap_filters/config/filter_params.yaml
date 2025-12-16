@@ -22,3 +22,8 @@
 
     baseline:
       dirty_N: 20.0
+    
+    rushi_rho:
+      alpha: 10.0
+      beta: 10.0
+      k: 6.0

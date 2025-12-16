@@ -64,17 +64,17 @@ RhoFilter::RhoFilter(
     next_velocity_estimate = next_zeta.block(state_space_dim, 0, state_space_dim, 1);
 }
 
-void RhoFilter::propagate_filter(const Eigen::MatrixXd& current_state) 
+void RhoFilter::propagate_filter(const Eigen::MatrixXd& current_position) 
 {
     sgn_term.noalias() = S * zeta;
-    sgn_term += current_state;
+    sgn_term += current_position;
 
     next_zeta.noalias() = A_d * zeta;
-    next_zeta.noalias() += B_q * current_state;
+    next_zeta.noalias() += B_q * current_position;
     next_zeta.noalias() += alpha * B_s * sgn_term.cwiseSign();
     
     zeta = next_zeta;
-    next_position_estimate = zeta.block(state_space_dim, 0, state_space_dim, 1); 
+    next_position_estimate = zeta.block(0, 0, state_space_dim, 1); 
     next_velocity_estimate = zeta.block(state_space_dim, 0, state_space_dim, 1);
 }
 

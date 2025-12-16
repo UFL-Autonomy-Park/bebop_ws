@@ -1,7 +1,9 @@
-#ifndef RUSHIRHOFILTERHPP
-#define RUSHIRHOFILTERHPP
+#ifndef MOCAP_FILTERS_RUSHI_RHOFILTER_HPP
+#define MOCAP_FILTERS_RUSHI_RHOFILTER_HPP
 
 #include <Eigen/Dense>
+
+namespace mocap_filters {
 
 class rushi_RhoFilter {
 public:
@@ -16,7 +18,7 @@ public:
     rushi_RhoFilter(const rushi_RhoFilter&) = delete;
     rushi_RhoFilter& operator=(const rushi_RhoFilter&) = delete;
 
-    void propagate_filter(const Eigen::MatrixXd& current_state);
+    void propagate_filter(const Eigen::MatrixXd& current_position);
     const Eigen::MatrixXd& get_velocity_estimate() const;
     const Eigen::MatrixXd& get_position_estimate() const;
 
@@ -34,3 +36,5 @@ private:
 };
 
 #endif
+
+} // namespace

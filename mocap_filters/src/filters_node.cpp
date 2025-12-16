@@ -8,6 +8,7 @@
 #include "mocap_filters/LevantFilter.hpp"
 #include "mocap_filters/KalmanFilter.hpp"
 #include "mocap_filters/RhoFilter.hpp"
+#include "mocap_filters/rushi_RhoFilter.hpp"
 
 using namespace std::chrono_literals;
 
@@ -19,7 +20,7 @@ public:
         auto child_frame = this->declare_parameter<std::string>("frames.child");
         auto input_topic = this->declare_parameter<std::string>("topics.input_pose");
         double freq = this->declare_parameter<double>("frequency"); // Hz
-        dt_ = 1.0 / freq;
+        dt_ = 1.0 / freq; // seconds
 
         // Levant Params
         double lev_C = this->declare_parameter<double>("levant.C");
@@ -29,6 +30,11 @@ public:
         double rho_k2 = this->declare_parameter<double>("rho.k2");
         double rho_k3 = this->declare_parameter<double>("rho.k3");
         double rho_alpha = this->declare_parameter<double>("rho.alpha");
+
+        // Rushi's Rho Params
+        double rushi_rho_alpha = this->declare_parameter<double>("rushi_rho.alpha");
+        double rushi_rho_beta = this->declare_parameter<double>("rushi_rho.beta");
+        double rushi_rho_k = this->declare_parameter<double>("rushi_rho.k");
 
         // Kalman Params
         double kal_q_pos = this->declare_parameter<double>("kalman.Q_pos");
@@ -40,25 +46,25 @@ public:
         // --- Initialization ---
         levant_ = std::make_unique<mocap_filters::LevantFilter>(lev_C, dt_);
         rho_ = std::make_unique<mocap_filters::RhoFilter>(dt_, 3, rho_alpha, rho_k1, rho_k2, rho_k3);
-        kalman_ = std::make_unique<mocap_filters::KalmanFilter>();
-
-        Eigen::Matrix<double, 12, 12> u_cov = Eigen::Matrix<double, 12, 12>::Zero();
-        u_cov.topLeftCorner<6,6>() = Eigen::Matrix<double, 6, 6>::Identity() * kal_q_pos;
-        u_cov.bottomRightCorner<6,6>() = Eigen::Matrix<double, 6, 6>::Identity() * kal_q_vel;
-        kalman_->init(u_cov, Eigen::Matrix<double, 6, 6>::Identity() * 1e-5, freq);
+        rushi_rho_ = std::make_unique<mocap_filters::rushi_RhoFilter>(dt_, 3, rushi_rho_alpha, rushi_rho_beta, rushi_rho_k);
 
         dirty_vel_.setZero();
         last_pos_numeric_.setZero();
         last_pos_dirty_.setZero();
 
-        // --- Communication ---
+        kalman_ = std::make_unique<mocap_filters::KalmanFilter>(); 
+        Eigen::Matrix<double, 12, 12> u_cov = Eigen::Matrix<double, 12, 12>::Zero();
+        u_cov.topLeftCorner<6,6>() = Eigen::Matrix<double, 6, 6>::Identity() * kal_q_pos;
+        u_cov.bottomRightCorner<6,6>() = Eigen::Matrix<double, 6, 6>::Identity() * kal_q_vel;
+        kalman_->init(u_cov, Eigen::Matrix<double, 6, 6>::Identity() * 1e-5, freq);
+
         pub_levant_  = this->create_publisher<nav_msgs::msg::Odometry>("odom/levant", 10);
         pub_rho_     = this->create_publisher<nav_msgs::msg::Odometry>("odom/rho", 10);
         pub_kalman_  = this->create_publisher<nav_msgs::msg::Odometry>("odom/kalman", 10);
         pub_dirty_   = this->create_publisher<nav_msgs::msg::Odometry>("odom/dirty", 10);
         pub_numeric_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/numeric", 10);
+        pub_rushi_rho_ = this->create_publisher<nav_msgs::msg::Odometry>("odom/rushi_rho", 10);
 
-        // Subscriber: Only updates the latest data buffer
         sub_pose_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
             input_topic, rclcpp::SensorDataQoS(),
             [this](geometry_msgs::msg::PoseStamped::SharedPtr msg) {
@@ -67,7 +73,6 @@ public:
                 has_data_ = true;
             });
 
-        // Timer: Runs the filters at strict fixed frequency
         auto period = std::chrono::duration<double>(dt_);
         timer_ = this->create_wall_timer(period, std::bind(&MocapFiltersNode::timer_callback, this));
 
@@ -102,9 +107,9 @@ private:
 
         // --- Filters Propagate/Update ---
         levant_->propagate(p_raw);
-        
         Eigen::MatrixXd p_rho_in = p_raw;
         rho_->propagate_filter(p_rho_in);
+        rushi_rho_->propagate_filter(p_rho_in);
 
         if (!kalman_->isReady()) {
             kalman_->prepareInitialCondition(t, q_raw, p_raw);
@@ -167,8 +172,9 @@ private:
             pub->publish(odom);
         };
 
-        publish_odom(pub_levant_, levant_->getPosition(), levant_->getVelocity());
+        publish_odom(pub_levant_, levant_->get_position_estimate(), levant_->get_velocity_estimate());
         publish_odom(pub_rho_, rho_->get_position_estimate(), rho_->get_velocity_estimate());
+        publish_odom(pub_rushi_rho_, rushi_rho_->get_position_estimate(), rushi_rho_->get_velocity_estimate());
 
         if (kalman_->isReady()) {
             publish_odom(pub_kalman_, kalman_->position, kalman_->linear_vel, kalman_->angular_vel);
@@ -192,8 +198,9 @@ private:
     std::unique_ptr<mocap_filters::LevantFilter> levant_;
     std::unique_ptr<mocap_filters::KalmanFilter> kalman_;
     std::unique_ptr<mocap_filters::RhoFilter> rho_;
+    std::unique_ptr<mocap_filters::rushi_RhoFilter> rushi_rho_;
 
-    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pub_levant_, pub_rho_, pub_kalman_;
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pub_levant_, pub_rho_, pub_kalman_, pub_rushi_rho_;
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pub_dirty_, pub_numeric_;
     
     rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr sub_pose_;

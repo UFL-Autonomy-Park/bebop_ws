@@ -19,9 +19,8 @@ public:
     RhoFilter(const RhoFilter&) = delete;
     RhoFilter& operator=(const RhoFilter&) = delete;
 
-    void propagate_filter(const Eigen::MatrixXd& current_state);
+    void propagate_filter(const Eigen::MatrixXd& current_position);
     
-    // FIX: Return by const reference (matches .cpp)
     const Eigen::MatrixXd& get_velocity_estimate() const;
     const Eigen::MatrixXd& get_position_estimate() const;
 
