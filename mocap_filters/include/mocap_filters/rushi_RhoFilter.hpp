@@ -29,7 +29,7 @@ private:
     Eigen::MatrixXd A_d;
     Eigen::MatrixXd B_d;
 
-    Eigen::MatrixXd zeta;  // filter state
+    Eigen::MatrixXd zeta;
     Eigen::MatrixXd next_zeta;
     Eigen::MatrixXd next_velocity_estimate;
     Eigen::MatrixXd next_position_estimate;
@@ -37,4 +37,4 @@ private:
 
 #endif
 
-} // namespace
+}
