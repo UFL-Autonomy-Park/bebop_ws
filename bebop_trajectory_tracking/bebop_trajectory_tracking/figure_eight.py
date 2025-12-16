@@ -3,9 +3,10 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 
+from collections import deque
 import numpy as np
 from scipy.spatial.transform import Rotation
-from geometry_msgs.msg import PoseStamped, Twist
+from geometry_msgs.msg import PoseStamped, Twist, Point
 from visualization_msgs.msg import Marker
 from std_msgs.msg import Int32 
 
@@ -48,7 +49,17 @@ class TrajectoryTracking(Node):
             Marker,
             '/bebop104/marker',
             10
-        )     
+        )
+        self.trajectory_buffer_pub_ = self.create_publisher(
+            Marker,
+            '/bebop104/trajectory_buffer',
+            10
+        )
+        self.pose_buffer_pub_ = self.create_publisher(
+            Marker,
+            '/bebop104/pose_buffer',
+            10
+        )
         
         # Log
         self.get_logger().info('Figure eight trajectory tracking node has been initialized.')
@@ -75,6 +86,9 @@ class TrajectoryTracking(Node):
         self.trajectory_setpoint = np.zeros(3) # world frame (x,y,z)
         # Output
         self.control_input = Twist()
+        # Viz
+        self.trajectory_buffer = deque(maxlen=100) # Keep last 100 points
+        self.pose_buffer = deque(maxlen=100)
 
     def timer_callback(self):
         if self.bebop_mode != 1:
@@ -132,9 +146,11 @@ class TrajectoryTracking(Node):
             err_msg.linear.z = err_z
             err_msg.angular.y = err_yaw
             self.error_pub_.publish(err_msg)
+
             # Publish Bebop marker
             bebop_marker = Marker()
             bebop_marker.header.frame_id = self.bebop_pose.header.frame_id
+            bebop_marker.header.stamp = self.get_clock().now().to_msg()
             bebop_marker.type = Marker.SPHERE
             bebop_marker.action = Marker.ADD
             bebop_marker.pose.position.x = self.bebop_pose.pose.position.x
@@ -147,7 +163,43 @@ class TrajectoryTracking(Node):
             bebop_marker.color.g = 1.0
             bebop_marker.color.b = 0.0
             bebop_marker.color.a = 1.0
-            self.bebop_sphere_pub_(bebop_marker)
+            self.bebop_sphere_pub_.publish(bebop_marker)
+            # Publish desired trajectory buffer
+            new_trajectory_point = Point()
+            new_trajectory_point.x = self.trajectory_setpoint[0]
+            new_trajectory_point.y = self.trajectory_setpoint[1]
+            new_trajectory_point.z = self.trajectory_setpoint[2]
+            self.trajectory_buffer.append(new_trajectory_point)
+            trajectory_buffer_marker = Marker()
+            trajectory_buffer_marker.header.frame_id = self.bebop_pose.header.frame_id
+            trajectory_buffer_marker.header.stamp = self.get_clock().now().to_msg()
+            trajectory_buffer_marker.type = Marker.LINE_STRIP
+            trajectory_buffer_marker.action = Marker.ADD
+            trajectory_buffer_marker.scale.x = 0.1
+            trajectory_buffer_marker.color.r = 1.0
+            trajectory_buffer_marker.color.g = 0.0
+            trajectory_buffer_marker.color.b = 0.0
+            trajectory_buffer_marker.color.a = 1.0
+            trajectory_buffer_marker.points = list(self.trajectory_buffer)
+            self.trajectory_buffer_pub_.publish(trajectory_buffer_marker)
+            # Publish pose buffer
+            new_pose_point = Point()
+            new_pose_point.x = self.bebop_pose.pose.position.x
+            new_pose_point.y = self.bebop_pose.pose.position.y
+            new_pose_point.z = self.bebop_pose.pose.position.z
+            self.pose_buffer.append(new_pose_point)
+            pose_buffer_marker = Marker()
+            pose_buffer_marker.header.frame_id = self.bebop_pose.header.frame_id
+            pose_buffer_marker.header.stamp = self.get_clock().now().to_msg()
+            pose_buffer_marker.type = Marker.LINE_STRIP
+            pose_buffer_marker.action = Marker.ADD
+            pose_buffer_marker.scale.x = 0.1
+            pose_buffer_marker.color.r = 0.0
+            pose_buffer_marker.color.g = 1.0
+            pose_buffer_marker.color.b = 0.0
+            pose_buffer_marker.color.a = 1.0
+            pose_buffer_marker.points = list(self.pose_buffer)
+            self.pose_buffer_pub_.publish(pose_buffer_marker)
 
         else:
             self.get_logger().warn('Bebop mode is not recognized. Shutting down node')
