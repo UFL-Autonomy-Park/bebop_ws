@@ -68,9 +68,6 @@ public:
         std::string cmd_vel_topic = this->get_parameter("cmd_vel_topic").as_string();
         cmd_vel_pub_ = this->create_publisher<geometry_msgs::msg::Twist>(cmd_vel_topic, 10);
         
-        // Acceleration Estimate Publisher
-        accel_est_pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>("/bebop104/acceleration_estimate", 10);
-
         // Log
         RCLCPP_INFO(this->get_logger(), "Low-level Bebop controller active. Listening for %s", des_vel_topic.c_str());
     }
@@ -151,7 +148,9 @@ private:
 
         // Hover if not in offboard mode (mode 1)
         if (bebop_mode_ != 1) {
-            stopDrone();
+            // Reset integral terms
+            err_sum_x_ = 0.0;
+            err_sum_y_ = 0.0;
             RCLCPP_WARN(this->get_logger(), "Not in offboard mode.");
             return;
         }
@@ -187,15 +186,6 @@ private:
         dirty_->propagate(current_vel_body_);
         Eigen::Vector3d acceleration_estimate = dirty_->get_velocity_estimate(); 
         
-        // Publish acceleration estimate
-        geometry_msgs::msg::TwistStamped accel_msg;
-        accel_msg.header.stamp = this->now();
-        accel_msg.header.frame_id = "body";
-        accel_msg.twist.linear.x = acceleration_estimate.x();
-        accel_msg.twist.linear.y = acceleration_estimate.y();
-        accel_msg.twist.linear.z = acceleration_estimate.z();
-        accel_est_pub_->publish(accel_msg);
-
         // PID output (desired tilt in rad)
         // Normalized wrt max values
         double u_pitch = (kp_xy_ * err_x + ki_xy_ * err_sum_x_ - kd_xy_ * acceleration_estimate.x());
@@ -229,15 +219,24 @@ private:
         // Reset integral terms
         err_sum_x_ = 0.0;
         err_sum_y_ = 0.0;
+        // Send zero cmd_vel
+        geometry_msgs::msg::Twist cmd_vel_zero;
+        cmd_vel_zero.linear.x = 0.0;
+        cmd_vel_zero.linear.y = 0.0;
+        cmd_vel_zero.linear.z = 0.0;
+        cmd_vel_zero.angular.z = 0.0;
+        cmd_vel_pub_->publish(cmd_vel_zero);
     }
 
+    // Subscribers
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr des_vel_sub_;
     rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr bebop_mode_sub_;
 
+    // Publishers
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
-    rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr accel_est_pub_;
 
+    // Helper
     std::unique_ptr<bebop_control::DirtyDerivative> dirty_;
 };
 
