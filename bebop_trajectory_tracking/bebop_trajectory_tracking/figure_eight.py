@@ -164,7 +164,7 @@ class TrajectoryTracking(Node):
             # Publish trajectory setpoint
             traj_msg = PoseStamped()
             traj_msg.header.stamp = self.get_clock().now().to_msg()
-            traj_msg.header.frame_id = 'world'
+            traj_msg.header.frame_id = 'odom'
             traj_msg.pose.position.x = self.trajectory_setpoint[0]
             traj_msg.pose.position.y = self.trajectory_setpoint[1]
             traj_msg.pose.position.z = self.trajectory_setpoint[2]
