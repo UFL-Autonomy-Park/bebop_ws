@@ -16,6 +16,9 @@ DirtyDerivative::DirtyDerivative(double N, double dt)
 }
 
 void DirtyDerivative::propagate(const Eigen::Vector3d& x_meas) {
+    // Make sure measurement is valid
+    if (!x_meas.allFinite()) return;
+
     if (!initialized_) {
         x_prev_ = x_meas;
         v_est_.setZero();
