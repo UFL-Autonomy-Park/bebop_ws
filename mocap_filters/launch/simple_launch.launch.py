@@ -15,6 +15,7 @@ def generate_launch_description():
             package='mocap_filters',
             executable='filters_node',
             name='mocap_filters_node',
+            namespace='bebop104',
             output='screen',
             parameters=[config_file_path],
         )

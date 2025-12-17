@@ -1,11 +1,11 @@
 /**:
   ros__parameters:
     frames:
-      parent: "world"
-      child: "body_fixed"
+      parent: "odom"
+      child: "bebop104/base_link"
     topics:
       input_pose: "/vrpn_mocap/bebop104/pose"
-    frequency: 100.0
+    frequency: 100.0 # Must be >= 0.0
 
     levant:
       C: 2.0
@@ -22,7 +22,7 @@
 
     baseline:
       dirty_N: 20.0
-    
+
     rushi_rho:
       alpha: 10.0
       beta: 10.0

@@ -19,6 +19,11 @@ public:
         auto child_frame = this->declare_parameter<std::string>("frames.child");
         auto input_topic = this->declare_parameter<std::string>("topics.input_pose");
         double freq = this->declare_parameter<double>("frequency");
+        if (freq <= 0.0)
+        {
+            RCLCPP_FATAL(this->get_logger(), "Invalid frequency parameter: %f. Frequency must be strictly positive.",freq);
+            throw std::invalid_argument("Frequency must be greater than zero");
+        }
         double dt = 1.0 / freq;
 
         double lev_C = this->declare_parameter<double>("levant.C");
@@ -37,11 +42,11 @@ public:
         numeric_ = std::make_unique<mocap_filters::NumericalDifferentiation>(dt);
         dirty_ = std::make_unique<mocap_filters::DirtyDerivative>(dirty_N, dt);
 
-        pub_levant_    = this->create_publisher<nav_msgs::msg::Odometry>("/bebop104/filtered_odom/levant", 10);
-        pub_rho_       = this->create_publisher<nav_msgs::msg::Odometry>("/bebop104/filtered_odom/rho", 10);
-        pub_dirty_     = this->create_publisher<nav_msgs::msg::Odometry>("/bebop104/filtered_odom/dirty", 10);
-        pub_numeric_   = this->create_publisher<nav_msgs::msg::Odometry>("/bebop104/filtered_odom/numeric", 10);
-        pub_rushi_rho_ = this->create_publisher<nav_msgs::msg::Odometry>("/bebop104/filtered_odom/rushi_rho", 10);
+        pub_levant_    = this->create_publisher<nav_msgs::msg::Odometry>("filtered_odom/levant", 10);
+        pub_rho_       = this->create_publisher<nav_msgs::msg::Odometry>("filtered_odom/rho", 10);
+        pub_dirty_     = this->create_publisher<nav_msgs::msg::Odometry>("filtered_odom/dirty", 10);
+        pub_numeric_   = this->create_publisher<nav_msgs::msg::Odometry>("filtered_odom/numeric", 10);
+        pub_rushi_rho_ = this->create_publisher<nav_msgs::msg::Odometry>("filtered_odom/rushi_rho", 10);
         sub_pose_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
             input_topic, rclcpp::SensorDataQoS(),
             [this](geometry_msgs::msg::PoseStamped::SharedPtr msg) {
