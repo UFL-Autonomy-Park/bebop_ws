@@ -20,7 +20,7 @@ NCRLabViz::NCRLabViz() : Node("ncr_lab_viz_node"), num_subscribers_(0) {
     }
 
     // Initialize polys
-    low_border_poly_msg_.header.frame_id = high_border_poly_msg_.header.frame_id = "world";
+    low_border_poly_msg_.header.frame_id = high_border_poly_msg_.header.frame_id = "odom";
 
     // Set timestamps
     rclcpp::Time now = this->get_clock()->now();
