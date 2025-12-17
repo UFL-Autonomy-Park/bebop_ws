@@ -81,6 +81,7 @@ class TrajectoryTracking(Node):
         # Bebop state
         self.bebop_pose = PoseStamped()
         self.bebop_mode = int(0) # 0: teleop, 1: offboard
+        self.last_pose_time = self.get_clock().now() # safety
         # Desired Trajectory
         self.step = 0.0
         self.trajectory_setpoint = np.zeros(3) # world frame (x,y,z)
@@ -91,124 +92,134 @@ class TrajectoryTracking(Node):
         self.pose_buffer = deque(maxlen=250)
 
     def timer_callback(self):
-        # Publish Bebop marker
-        bebop_marker = Marker()
-        bebop_marker.header.frame_id = self.bebop_pose.header.frame_id
-        bebop_marker.header.stamp = self.get_clock().now().to_msg()
-        bebop_marker.type = Marker.SPHERE
-        bebop_marker.action = Marker.ADD
-        bebop_marker.pose.position.x = self.bebop_pose.pose.position.x
-        bebop_marker.pose.position.y = self.bebop_pose.pose.position.y
-        bebop_marker.pose.position.z = self.bebop_pose.pose.position.z
-        bebop_marker.scale.x = 0.3
-        bebop_marker.scale.y = 0.3
-        bebop_marker.scale.z = 0.3
-        bebop_marker.color.r = 0.0
-        bebop_marker.color.g = 1.0
-        bebop_marker.color.b = 0.0
-        bebop_marker.color.a = 1.0
-        self.bebop_sphere_pub_.publish(bebop_marker)
-        # Publish pose buffer
-        new_pose_point = Point()
-        new_pose_point.x = self.bebop_pose.pose.position.x
-        new_pose_point.y = self.bebop_pose.pose.position.y
-        new_pose_point.z = self.bebop_pose.pose.position.z
-        self.pose_buffer.append(new_pose_point)
-        pose_buffer_marker = Marker()
-        pose_buffer_marker.header.frame_id = self.bebop_pose.header.frame_id
-        pose_buffer_marker.header.stamp = self.get_clock().now().to_msg()
-        pose_buffer_marker.type = Marker.LINE_STRIP
-        pose_buffer_marker.action = Marker.ADD
-        pose_buffer_marker.scale.x = 0.05
-        pose_buffer_marker.color.r = 0.0
-        pose_buffer_marker.color.g = 1.0
-        pose_buffer_marker.color.b = 0.0
-        pose_buffer_marker.color.a = 0.3
-        pose_buffer_marker.points = list(self.pose_buffer)
-        self.pose_buffer_pub_.publish(pose_buffer_marker)
+        # Check if we actually have a pose
+        if not self.bebop_pose.header.frame_id:
+            return
+        else:
+            # Publish Bebop marker
+            bebop_marker = Marker()
+            bebop_marker.header.frame_id = self.bebop_pose.header.frame_id
+            bebop_marker.header.stamp = self.get_clock().now().to_msg()
+            bebop_marker.type = Marker.SPHERE
+            bebop_marker.action = Marker.ADD
+            bebop_marker.pose.position.x = self.bebop_pose.pose.position.x
+            bebop_marker.pose.position.y = self.bebop_pose.pose.position.y
+            bebop_marker.pose.position.z = self.bebop_pose.pose.position.z
+            bebop_marker.scale.x = 0.3
+            bebop_marker.scale.y = 0.3
+            bebop_marker.scale.z = 0.3
+            bebop_marker.color.r = 0.0
+            bebop_marker.color.g = 1.0
+            bebop_marker.color.b = 0.0
+            bebop_marker.color.a = 1.0
+            self.bebop_sphere_pub_.publish(bebop_marker)
+            # Publish pose buffer
+            new_pose_point = Point()
+            new_pose_point.x = self.bebop_pose.pose.position.x
+            new_pose_point.y = self.bebop_pose.pose.position.y
+            new_pose_point.z = self.bebop_pose.pose.position.z
+            self.pose_buffer.append(new_pose_point)
+            pose_buffer_marker = Marker()
+            pose_buffer_marker.header.frame_id = self.bebop_pose.header.frame_id
+            pose_buffer_marker.header.stamp = self.get_clock().now().to_msg()
+            pose_buffer_marker.type = Marker.LINE_STRIP
+            pose_buffer_marker.action = Marker.ADD
+            pose_buffer_marker.scale.x = 0.05
+            pose_buffer_marker.color.r = 0.0
+            pose_buffer_marker.color.g = 1.0
+            pose_buffer_marker.color.b = 0.0
+            pose_buffer_marker.color.a = 0.3
+            pose_buffer_marker.points = list(self.pose_buffer)
+            self.pose_buffer_pub_.publish(pose_buffer_marker)
+        
+        # Check if we have a fresh pose
+        if (self.get_clock().now() - self.last_pose_time).nanoseconds > 1e9:
+            zero_twist = Twist()
+            zero_twist.linear.x = 0.0
+            zero_twist.linear.y = 0.0
+            zero_twist.linear.z = 0.0
+            zero_twist.angular.y = 0.0
+            self.control_pub_.publish(zero_twist)
+            return
         
         if self.bebop_mode != 1:
             return # Only run in offboard mode
-        elif self.bebop_mode == 1:
-            # Compute desired trajectory (figure eight, constant altitude)
-            self.trajectory_setpoint[0] = -1.0 * np.sin(2 * self.step)
-            self.trajectory_setpoint[1] = self.vert_offset
-            self.trajectory_setpoint[2] = 3 * np.sin(self.step)
-            # Heading is tangent to trajectory
-            traj_deriv_x = -2.0 * np.cos(2 * self.step)
-            traj_deriv_z = 3.0 * np.cos(self.step)
-            yaw_setpoint = np.arctan2(traj_deriv_z, traj_deriv_x)
-            # Increment step
-            self.step += 1.0/(self.update_rate * 4.5)
-            
-            # Get current yaw from pose
-            q = self.bebop_pose.pose.orientation
-            r_world = Rotation.from_quat([q.x, q.y, q.z, q.w])
-            r_enu_correction = Rotation.from_euler('x', 90, degrees=True) # To ENU
-            r_enu = r_world.inv() * r_enu_correction 
-            current_roll, current_pitch, current_yaw = r_enu.as_euler('xyz', degrees=False)
+        
+        # Compute desired trajectory (figure eight, constant altitude)
+        self.trajectory_setpoint[0] = -1.0 * np.sin(2 * self.step)
+        self.trajectory_setpoint[1] = self.vert_offset
+        self.trajectory_setpoint[2] = 3 * np.sin(self.step)
+        # Heading is tangent to trajectory
+        traj_deriv_x = -2.0 * np.cos(2 * self.step)
+        traj_deriv_z = 3.0 * np.cos(self.step)
+        yaw_setpoint = np.arctan2(traj_deriv_z, traj_deriv_x)
+        # Increment step
+        self.step += 1.0/(self.update_rate * 4.5)
+        
+        # Get current yaw from pose
+        q = self.bebop_pose.pose.orientation
+        r_world = Rotation.from_quat([q.x, q.y, q.z, q.w])
+        r_enu_correction = Rotation.from_euler('x', 90, degrees=True) # To ENU
+        r_enu = r_world.inv() * r_enu_correction 
+        current_roll, current_pitch, current_yaw = r_enu.as_euler('xyz', degrees=False)
 
-            # Compute control input (P controller)
-            err_x = self.trajectory_setpoint[0] - self.bebop_pose.pose.position.x
-            err_y = self.trajectory_setpoint[1] - self.bebop_pose.pose.position.y
-            err_z = self.trajectory_setpoint[2] - self.bebop_pose.pose.position.z
-            err_yaw = -(yaw_setpoint - current_yaw)
-            err_yaw = (err_yaw + np.pi) % (2 * np.pi) - np.pi # Wrap to [-pi, pi]
-            self.control_input.linear.x = self.tracking_kp_lat * err_x
-            self.control_input.linear.y = self.tracking_kp_vert * err_y
-            self.control_input.linear.z = self.tracking_kp_lat * err_z
-            self.control_input.angular.y = err_yaw
+        # Compute control input (P controller)
+        err_x = self.trajectory_setpoint[0] - self.bebop_pose.pose.position.x
+        err_y = self.trajectory_setpoint[1] - self.bebop_pose.pose.position.y
+        err_z = self.trajectory_setpoint[2] - self.bebop_pose.pose.position.z
+        err_yaw = -(yaw_setpoint - current_yaw)
+        err_yaw = (err_yaw + np.pi) % (2 * np.pi) - np.pi # Wrap to [-pi, pi]
+        self.control_input.linear.x = self.tracking_kp_lat * err_x
+        self.control_input.linear.y = self.tracking_kp_vert * err_y
+        self.control_input.linear.z = self.tracking_kp_lat * err_z
+        self.control_input.angular.y = err_yaw
+        
+        # Publish control input
+        self.control_pub_.publish(self.control_input)
+        # Publish trajectory setpoint
+        traj_msg = PoseStamped()
+        traj_msg.header.stamp = self.get_clock().now().to_msg()
+        traj_msg.header.frame_id = 'odom'
+        traj_msg.pose.position.x = self.trajectory_setpoint[0]
+        traj_msg.pose.position.y = self.trajectory_setpoint[1]
+        traj_msg.pose.position.z = self.trajectory_setpoint[2]
+        r = Rotation.from_euler('y', -yaw_setpoint, degrees=False)
+        qx, qy, qz, qw = r.as_quat()
+        traj_msg.pose.orientation.x = qx
+        traj_msg.pose.orientation.y = qy
+        traj_msg.pose.orientation.z = qz
+        traj_msg.pose.orientation.w = qw
+        self.trajectory_pub_.publish(traj_msg)
+        # Publish tracking error
+        err_msg = Twist()
+        err_msg.linear.x = err_x
+        err_msg.linear.y = err_y
+        err_msg.linear.z = err_z
+        err_msg.angular.y = err_yaw
+        self.error_pub_.publish(err_msg)
 
-            # Publish control input
-            self.control_pub_.publish(self.control_input)
-            # Publish trajectory setpoint
-            traj_msg = PoseStamped()
-            traj_msg.header.stamp = self.get_clock().now().to_msg()
-            traj_msg.header.frame_id = 'odom'
-            traj_msg.pose.position.x = self.trajectory_setpoint[0]
-            traj_msg.pose.position.y = self.trajectory_setpoint[1]
-            traj_msg.pose.position.z = self.trajectory_setpoint[2]
-            r = Rotation.from_euler('y', -yaw_setpoint, degrees=False)
-            qx, qy, qz, qw = r.as_quat()
-            traj_msg.pose.orientation.x = qx
-            traj_msg.pose.orientation.y = qy
-            traj_msg.pose.orientation.z = qz
-            traj_msg.pose.orientation.w = qw
-            self.trajectory_pub_.publish(traj_msg)
-            # Publish tracking error
-            err_msg = Twist()
-            err_msg.linear.x = err_x
-            err_msg.linear.y = err_y
-            err_msg.linear.z = err_z
-            err_msg.angular.y = err_yaw
-            self.error_pub_.publish(err_msg)
-
-            
-            # Publish desired trajectory buffer
-            new_trajectory_point = Point()
-            new_trajectory_point.x = self.trajectory_setpoint[0]
-            new_trajectory_point.y = self.trajectory_setpoint[1]
-            new_trajectory_point.z = self.trajectory_setpoint[2]
-            self.trajectory_buffer.append(new_trajectory_point)
-            trajectory_buffer_marker = Marker()
-            trajectory_buffer_marker.header.frame_id = self.bebop_pose.header.frame_id
-            trajectory_buffer_marker.header.stamp = self.get_clock().now().to_msg()
-            trajectory_buffer_marker.type = Marker.LINE_STRIP
-            trajectory_buffer_marker.action = Marker.ADD
-            trajectory_buffer_marker.scale.x = 0.05
-            trajectory_buffer_marker.color.r = 1.0
-            trajectory_buffer_marker.color.g = 0.0
-            trajectory_buffer_marker.color.b = 0.0
-            trajectory_buffer_marker.color.a = 0.3
-            trajectory_buffer_marker.points = list(self.trajectory_buffer)
-            self.trajectory_buffer_pub_.publish(trajectory_buffer_marker)
-
-        else:
-            self.get_logger().warn('Bebop mode is not recognized. Shutting down node')
-            # Kill node
-            rclpy.shutdown()
+        
+        # Publish desired trajectory buffer
+        new_trajectory_point = Point()
+        new_trajectory_point.x = self.trajectory_setpoint[0]
+        new_trajectory_point.y = self.trajectory_setpoint[1]
+        new_trajectory_point.z = self.trajectory_setpoint[2]
+        self.trajectory_buffer.append(new_trajectory_point)
+        trajectory_buffer_marker = Marker()
+        trajectory_buffer_marker.header.frame_id = self.bebop_pose.header.frame_id
+        trajectory_buffer_marker.header.stamp = self.get_clock().now().to_msg()
+        trajectory_buffer_marker.type = Marker.LINE_STRIP
+        trajectory_buffer_marker.action = Marker.ADD
+        trajectory_buffer_marker.scale.x = 0.05
+        trajectory_buffer_marker.color.r = 1.0
+        trajectory_buffer_marker.color.g = 0.0
+        trajectory_buffer_marker.color.b = 0.0
+        trajectory_buffer_marker.color.a = 0.3
+        trajectory_buffer_marker.points = list(self.trajectory_buffer)
+        self.trajectory_buffer_pub_.publish(trajectory_buffer_marker)
 
     def pose_callback(self, msg):
+        self.last_pose_time = self.get_clock().now()
         # get pose
         self.bebop_pose = msg
 
