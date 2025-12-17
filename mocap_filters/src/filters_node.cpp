@@ -42,18 +42,22 @@ public:
         numeric_ = std::make_unique<mocap_filters::NumericalDifferentiation>(dt);
         dirty_ = std::make_unique<mocap_filters::DirtyDerivative>(dirty_N, dt);
 
+        // Publishers
         pub_levant_    = this->create_publisher<nav_msgs::msg::Odometry>("filtered_odom/levant", 10);
         pub_rho_       = this->create_publisher<nav_msgs::msg::Odometry>("filtered_odom/rho", 10);
         pub_dirty_     = this->create_publisher<nav_msgs::msg::Odometry>("filtered_odom/dirty", 10);
         pub_numeric_   = this->create_publisher<nav_msgs::msg::Odometry>("filtered_odom/numeric", 10);
         pub_rushi_rho_ = this->create_publisher<nav_msgs::msg::Odometry>("filtered_odom/rushi_rho", 10);
+
+        // Subscriber
         sub_pose_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
             input_topic, rclcpp::SensorDataQoS(),
             [this](geometry_msgs::msg::PoseStamped::SharedPtr msg) {
                 latest_msg_ = msg;
                 has_data_ = true;
             });
-
+        
+        // Timer
         timer_ = this->create_wall_timer(std::chrono::duration<double>(dt), 
                                          std::bind(&MocapFiltersNode::timer_callback, this));
 

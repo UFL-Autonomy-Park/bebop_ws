@@ -15,6 +15,7 @@ setup(
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
         (os.path.join('share', package_name, 'param'), glob('param/*.rviz')),
         (os.path.join('share', package_name, 'param'), glob('param/*.yaml')),
+        (os.path.join('share', package_name, 'param'), glob('param/*.perspective')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,

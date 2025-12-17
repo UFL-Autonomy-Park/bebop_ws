@@ -29,7 +29,7 @@ class TrajectoryTracking(Node):
             10
         )
 
-        # Publisher
+        # Publishers
         self.control_pub_ = self.create_publisher(
             Twist,
             '/bebop104/cmd_vel_des',
