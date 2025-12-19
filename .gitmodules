@@ -12,7 +12,7 @@
     url = ../ros2_bebop_driver.git
 [submodule "ros2_parrot_arsdk"]
 	path = ros2_parrot_arsdk
-	url = https://github.com/UFL-Autonomy-Park/ros2_parrot_arsdk.git
+	url = ../ros2_parrot_arsdk.git
 [submodule "vrpn_mocap"]
     path = vrpn_mocap
     url = ../vrpn_mocap.git
