@@ -16,3 +16,9 @@
 [submodule "vrpn_mocap"]
     path = vrpn_mocap
     url = ../vrpn_mocap.git
+[submodule "ncr_lab_viz"]
+	path = ncr_lab_viz
+	url = ../ncr_lab_viz.git
+[submodule "bebop_control"]
+	path = bebop_control
+	url = ../bebop_control.git
