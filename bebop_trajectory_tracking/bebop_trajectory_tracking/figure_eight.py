@@ -176,6 +176,7 @@ class TrajectoryTracking(Node):
         
         # Publish control input
         self.control_pub_.publish(self.control_input)
+        
         # Publish trajectory setpoint
         traj_msg = PoseStamped()
         traj_msg.header.stamp = self.get_clock().now().to_msg()
@@ -190,6 +191,7 @@ class TrajectoryTracking(Node):
         traj_msg.pose.orientation.z = qz
         traj_msg.pose.orientation.w = qw
         self.trajectory_pub_.publish(traj_msg)
+        
         # Publish tracking error
         err_msg = Twist()
         err_msg.linear.x = err_x
@@ -197,7 +199,6 @@ class TrajectoryTracking(Node):
         err_msg.linear.z = err_z
         err_msg.angular.y = err_yaw
         self.error_pub_.publish(err_msg)
-
         
         # Publish desired trajectory buffer
         new_trajectory_point = Point()
