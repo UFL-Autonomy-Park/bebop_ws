@@ -18,7 +18,7 @@ cd <your_ws_name>/src
 ```
 
 ```
-git clone bebop_ws && git submodule update --init --recursive
+git clone https://github.com/UFL-Autonomy-Park/bebop_ws.git && git submodule update --init --recursive
 ```
 
 OR 
