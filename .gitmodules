@@ -22,7 +22,3 @@
 [submodule "bebop_control"]
 	path = bebop_control
 	url = ../bebop_control.git
-
-[submodule "bebop_control"]
-    path = bebop_control
-    url = ../bebop_control.git
