@@ -1,9 +1,3 @@
-[submodule "bebop_client"]
-    path = bebop_client
-    url = ../bebop_client.git
-[submodule "bebop_server"]
-    path = bebop_server
-    url = ../bebop_server.git
 [submodule "bebop_teleop"]
     path = bebop_teleop
     url = ../bebop_teleop.git
