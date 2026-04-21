@@ -6,7 +6,7 @@ Workspace to start up Parrot Bebop 2 drones in the NCR lab.
 | --- | --- | --- | --- |
 | `ros2_parrot_arsdk` | Parrot ARSDK | [ros2_parrot_arsdk](https://github.com/UFL-Autonomy-Park/ros2_parrot_arsdk) | Forked from [jeremyfix/ros2_parrot_arsdk](https://github.com/jeremyfix/ros2_parrot_arsdk) |
 | `ros2_bebop_driver` | ROS2 re-write of `bebop_autonomy`, creates publishers and subscribers for core Bebop functionality | [ros2_bebop_driver](https://github.com/UFL-Autonomy-Park/ros2_bebop_driver) | Forked from [jeremyfix/ros2_bebop_driver](https://github.com/jeremyfix/ros2_bebop_driver) |
-
+| `vrpn_mocap` | Turns VRPN messages from OptriTrack Motive in ROS 2 messages | [vrpn_mocap](https://github.com/UFL-Autonomy-Park/vrpn_mocap/) | Forked from [alvinsunyixiao/vrpn_mocap](https://github.com/alvinsunyixiao/vrpn_mocap) | 
 ## Requirements
 ROS 2 Humble, Ubuntu 22.04
 
