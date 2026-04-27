@@ -16,3 +16,6 @@
 [submodule "bebop_control"]
 	path = bebop_control
 	url = ../bebop_control.git
+[submodule "rho_filter"]
+	path = rho_filter
+	url = git@github.com:UFL-Autonomy-Park/rho_filter.git
