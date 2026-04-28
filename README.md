@@ -1,6 +1,6 @@
 # bebop_ws
 
-Workspace to start up Parrot Bebop 2 drones in the NCR lab. 
+Workspace to start up Parrot Bebop 2 drones in the NCR Lab. 
 
 |  Package Name | Description  |  Repository URL   | Acknowledgements | 
 | --- | --- | --- | --- |
